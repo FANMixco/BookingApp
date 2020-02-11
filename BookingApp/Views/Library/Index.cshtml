@@ -1,0 +1,73 @@
+﻿@{
+    ViewData["Title"] = "Library Admin";
+}
+
+@model BookingApp.Models.AvailableBooksViewModel
+
+<h4>Books Available</h4>
+@Html.ActionLink("New", "Index", "Book")
+<dl class="row">
+    <dd class="col-sm-10">
+        <table class="table">
+            <tr>
+                <th>Book</th>
+                <th>Available</th>
+                <th></th>
+                <th></th>
+            </tr>
+            @foreach (var item in Model.AvailableBooks)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Book)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Available)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Update", "Book", new { id = item.BookId })
+                    </td>
+                    <td>
+                        @Html.ActionLink("Delete", "DeleteBook", "Library", new { id = item.BookId })
+                    </td>
+                </tr>
+            }
+        </table>
+    </dd>
+</dl>
+
+<h4>Reserved Books</h4>
+@Html.ActionLink("New", "Index", "User")
+<dl class="row">
+    <dd class="col-sm-10">
+        <table class="table">
+            <tr>
+                <th>User</th>
+                <th>Book</th>
+                <th>Date</th>
+                <th></th>
+                <th></th>
+            </tr>
+            @foreach (var item in Model.ReservedBooks)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.User)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Book)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", "User", new { id = item.ReservationId })
+                    </td>
+                    <td>
+                        @Html.ActionLink("Delete", "DeleteUser", "Library", new { id = item.ReservationId })
+                    </td>
+                </tr>
+            }
+        </table>
+    </dd>
+</dl>

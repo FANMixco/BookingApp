@@ -1,0 +1,17 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingApp", "BookingApp\BookingApp.csproj", "{344DF8B8-BE97-40E0-8D0B-0AC1996FA58C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{344DF8B8-BE97-40E0-8D0B-0AC1996FA58C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{344DF8B8-BE97-40E0-8D0B-0AC1996FA58C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{344DF8B8-BE97-40E0-8D0B-0AC1996FA58C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{344DF8B8-BE97-40E0-8D0B-0AC1996FA58C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
