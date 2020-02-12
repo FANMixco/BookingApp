@@ -17,6 +17,13 @@ namespace BookingApp.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
+        public IActionResult LogOut()
+        {
+            _httpContextAccessor.HttpContext.Session.Clear();
+
+            return RedirectToAction("Index", "Home");
+        }
+
         public IActionResult Index()
         {
             Role = _httpContextAccessor.HttpContext.Session.GetInt32("role");
@@ -111,7 +118,6 @@ namespace BookingApp.Controllers
             try
             {
                 using var db = new BookingContext();
-
 
                 db.Remove(new ReservedBook() { ReservedBookId = id });
                 db.SaveChanges();

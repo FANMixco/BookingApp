@@ -5,14 +5,14 @@ using BookingApp.Classes.DB;
 using BookingApp.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+//using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace BookingApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        //private readonly ILogger<HomeController> _logger;
 
         private readonly DBInfoSettings _settings;
 
@@ -20,9 +20,9 @@ namespace BookingApp.Controllers
 
         private static bool HasStarted = false;
 
-        public HomeController(IHttpContextAccessor httpContextAccessor, IOptions<DBInfoSettings> settings, ILogger<HomeController> logger)
+        public HomeController(IHttpContextAccessor httpContextAccessor, IOptions<DBInfoSettings> settings/*, ILogger<HomeController> logger*/)
         {
-            _logger = logger;
+            //_logger = logger;
 
             _httpContextAccessor = httpContextAccessor;
 
@@ -40,6 +40,19 @@ namespace BookingApp.Controllers
 
         public IActionResult Index()
         {
+            var role = _httpContextAccessor.HttpContext.Session.GetInt32("role");
+            if (role != null)
+            {
+                if (role == 0)
+                {
+                    return RedirectToAction("Index", "Library");
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Booking");
+                }
+            }
+
             return View();
         }
 
@@ -54,12 +67,13 @@ namespace BookingApp.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult Index(string username, string password)
         {
             using var db = new BookingContext();
 
-            var user = db.Users.FirstOrDefault(x => x.Username == username && x.Password == password);
+            var user = db.Users.FirstOrDefault(x => x.Username == username && x.Password == Encryption.Encrypt(password));
 
             if (user != null)
             {

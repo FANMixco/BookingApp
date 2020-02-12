@@ -30,6 +30,12 @@ namespace BookingApp.Controllers
             return View();
         }
 
+        [HttpPost]
+        public IActionResult Index(string name, string copies)
+        {
+            return View();
+        }
+
         public IActionResult Update(int id)
         {
             Role = _httpContextAccessor.HttpContext.Session.GetInt32("role");

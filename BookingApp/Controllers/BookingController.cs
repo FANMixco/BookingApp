@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using BookingApp.Classes.DB;
 using BookingApp.Models;
 using Microsoft.AspNetCore.Http;
@@ -15,16 +13,56 @@ namespace BookingApp.Controllers
 
         private int? Role { get; set; }
 
+        private static int UserID { get; set; }
+
         public BookingController(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }
 
+        public IActionResult LogOut()
+        {
+            _httpContextAccessor.HttpContext.Session.Clear();
+
+            return RedirectToAction("Index", "Home");
+        }
+
         public IActionResult Reserve(int id)
         {
+            try
+            {
+                using var db = new BookingContext();
 
+                if (db.ReservedBook.Count(x => x.BookId == id && x.UserId == UserID) < 2)
+                {
+                    db.Add(new ReservedBook() { BookId = id, UserId = UserID, ReservedDate = DateTime.Now });
+                    db.SaveChanges();
+                    return RedirectToAction("Index", "Booking", new { message = "reserved" });
+                }
 
-            return View();
+                return RedirectToAction("Index", "Booking", new { message = "tooMany" });
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Booking", new { message = "error" });
+            }
+        }
+
+        public IActionResult Cancel(int id)
+        {
+            try
+            {
+                using var db = new BookingContext();
+
+                db.Remove(new ReservedBook() { ReservedBookId = id });
+                db.SaveChanges();
+
+                return RedirectToAction("Index", "Booking", new { reservation = "canceled" });
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Booking", new { reservation = "error" });
+            }
         }
 
         public IActionResult Index()
@@ -53,9 +91,9 @@ namespace BookingApp.Controllers
                 booksAvailable.AvailableBooks.Add(new AvailableBooksModel() { Book = book.Name, Available = total - totalCurrentBook, BookId = book.BookId });
             }
 
-            var userId = db.Users.FirstOrDefault(x => x.Username == _httpContextAccessor.HttpContext.Session.GetString("user")).UserId;
+            UserID = db.Users.FirstOrDefault(x => x.Username == _httpContextAccessor.HttpContext.Session.GetString("user")).UserId;
 
-            foreach (var reservations in db.ReservedBook.Where(x=>x.UserId == userId))
+            foreach (var reservations in db.ReservedBook.Where(x=>x.UserId == UserID))
             {
                 var user = db.Users.FirstOrDefault(x => x.UserId == reservations.UserId).Username;
 

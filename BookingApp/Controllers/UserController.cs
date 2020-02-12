@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using BookingApp.Classes;
 using BookingApp.Classes.DB;
 using BookingApp.Models;
 using Microsoft.AspNetCore.Http;
@@ -42,7 +43,7 @@ namespace BookingApp.Controllers
             {
                 try
                 {
-                    _ = db.Add(new Users() { Username = username, Registered = DateTime.Now, Role = int.Parse(SelectedRole), Password = password });
+                    _ = db.Add(new Users() { Username = username, Registered = DateTime.Now, Role = int.Parse(SelectedRole), Password = Encryption.Encrypt(password) });
                     _ = db.SaveChanges();
 
                     return RedirectToAction("Index", "User", new { user = "Created" });
