@@ -14,6 +14,7 @@ namespace BookingApp.Models
         public int BookId { get; set; }
         public string Book { get; set; }
         public int Available { get; set; }
+        public int Total { get; set; }
     }
 
     public class ReservatedBooksModel

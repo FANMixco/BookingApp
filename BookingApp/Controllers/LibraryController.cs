@@ -47,7 +47,7 @@ namespace BookingApp.Controllers
 
                 var totalCurrentBook = db.ReservedBook.Count(x => x.BookId == book.BookId);
 
-                booksAvailable.AvailableBooks.Add(new AvailableBooksModel() { Book = book.Name, Available = total - totalCurrentBook, BookId = book.BookId });
+                booksAvailable.AvailableBooks.Add(new AvailableBooksModel() { Book = book.Name, Available = total - totalCurrentBook, BookId = book.BookId, Total = book.Total });
             }
 
             foreach (var reservations in db.ReservedBook)

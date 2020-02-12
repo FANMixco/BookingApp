@@ -5,6 +5,7 @@
 @model BookingApp.Models.BookUpdateModel
 
 <div>
+    @Html.ActionLink("Back", "Index", "Library")
     <form method="POST">
         <div class="form-group">
             <label for="book">Book</label>
@@ -14,7 +15,6 @@
             <label for="copies">Copies</label>
             <input type="number" class="form-control" id="copies" name="copies" min="1" placeholder="Copies" value="@Model.Copies" required />
         </div>
-        @Html.HiddenFor(x => Model.ID)
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>

@@ -31,9 +31,62 @@ namespace BookingApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(string name, string copies)
+        public IActionResult Index(string book, string copies)
         {
-            return View();
+            using var db = new BookingContext();
+
+            if (db.Books.Count(x => x.Name == book) == 0)
+            {
+                db.Add(new Books() { Name = book, Total = int.Parse(copies) });
+                db.SaveChanges();
+                return RedirectToAction("Index", "Book", new { message = "Added" });
+            }
+            else
+            {
+                return RedirectToAction("Index", "Book", new { error = "WrongName" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult Update(int id, string book, string copies)
+        {
+            using var db = new BookingContext();
+
+            var bookTotal = db.Books.Count(x => x.Name == book);
+            var isOldName = bookTotal == 1;
+
+            var totalReserved = db.ReservedBook.Count(x => x.BookId == id);
+
+            var makesCopiesLogic = (int.Parse(copies) - totalReserved) >= 0;
+
+            //bookTotal == 0 is a new name
+            if ((isOldName || bookTotal == 0) && makesCopiesLogic)
+            {
+                UpdateBook(id, book, copies, db);
+                return RedirectToAction("Update", "Book", new { id, message = "Updated" });
+            }
+            else if (!makesCopiesLogic)
+            {
+                return RedirectToAction("Update", "Book", new { id, error = "LessBooks" });
+            }
+            else if (bookTotal > 1)
+            {
+                return RedirectToAction("Update", "Book", new { id, error = "WrongName" });
+            }
+            else
+            {
+                return RedirectToAction("Update", "Home", new { id, error = "WrongRole" });
+            }
+        }
+
+        private static void UpdateBook(int id, string book, string copies, BookingContext db)
+        {
+            var bookData = db.Books.FirstOrDefault(x => x.BookId == id);
+            bookData.Name = book;
+            bookData.Total = int.Parse(copies);
+
+            db.Update(bookData);
+            db.SaveChanges();
         }
 
         public IActionResult Update(int id)
@@ -57,9 +110,8 @@ namespace BookingApp.Controllers
             }
             else
             {
-                RedirectToAction("Index", "Library", new { error = "WrongBook" });
+                return RedirectToAction("Index", "Library", new { error = "WrongBook" });
             }
-            return View();
         }
     }
 }
