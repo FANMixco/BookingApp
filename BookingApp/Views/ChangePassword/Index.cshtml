@@ -3,5 +3,21 @@
     ViewData["Title"] = "Change Password";
 }
 
-<h1>Index</h1>
-
+<div>
+    @Html.ActionLink("Back", "Index", "Home")
+    <form method="POST">
+        <div class="form-group">
+            <label for="oldPassword">Old password</label>
+            <input type="password" class="form-control" name="oldPassword" maxlength="16" id="oldPassword" aria-describedby="username" placeholder="Old password" required />
+        </div>
+        <div class="form-group">
+            <label for="newPassword">New password</label>
+            <input type="password" class="form-control" id="newPassword" maxlength="16" name="newPassword" placeholder="New password" required />
+        </div>
+        <div class="form-group">
+            <label for="rPassword">Repeat password</label>
+            <input type="password" class="form-control" id="rPassword" maxlength="16" name="rPassword" placeholder="Repeat password" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>

@@ -5,7 +5,14 @@
 @model BookingApp.Models.AvailableBooksViewModel
 
 <div class="container">
-    @Html.ActionLink("Log Out", "LogOut", "Library")
+    <div class="row">
+        <div class="col">
+            @Html.ActionLink("Log Out", "LogOut", "Library")
+        </div>
+        <div class="col">
+            @Html.ActionLink("Change Password", "Index", "ChangePassword")
+        </div>
+    </div>
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a class="nav-link active" href="#booksTab" data-toggle="tab">Books</a>
