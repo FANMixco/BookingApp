@@ -22,24 +22,28 @@ namespace BookingApp.Classes.DB
               .HasKey(p => new { p.ReservedBookId });
         }
 
-        public void DefaultData()
+        public async void DefaultData()
         {
             try
             {
                 using var db = new BookingContext();
-                _ = db.Add(new Users() { Username = "admin", Role = 0, Password = "admin" });
-                _ = db.SaveChanges();
 
-                _ = db.Add(new Books() { Name = "Harry Potter 1", Total = 5 });
-                _ = db.SaveChanges();
-                _ = db.Add(new Books() { Name = "Harry Potter 2", Total = 3 });
-                _ = db.SaveChanges();
-                _ = db.Add(new Books() { Name = "Harry Potter 3", Total = 1 });
-                _ = db.SaveChanges();
-                _ = db.Add(new Books() { Name = "Harry Potter 4", Total = 2 });
-                _ = db.SaveChanges();
-                _ = db.Add(new Books() { Name = "Harry Potter 5", Total = 4 });
-                _ = db.SaveChanges();
+                if (await db.Users.CountAsync() == 0)
+                {
+                    _ = db.Add(new Users() { Username = "admin", Role = 0, Password = "admin", Registered = DateTime.Now });
+                    _ = db.SaveChanges();
+
+                    _ = db.Add(new Books() { Name = "Harry Potter 1", Total = 5, Registered = DateTime.Now });
+                    _ = db.SaveChanges();
+                    _ = db.Add(new Books() { Name = "Harry Potter 2", Total = 3, Registered = DateTime.Now });
+                    _ = db.SaveChanges();
+                    _ = db.Add(new Books() { Name = "Harry Potter 3", Total = 1, Registered = DateTime.Now });
+                    _ = db.SaveChanges();
+                    _ = db.Add(new Books() { Name = "Harry Potter 4", Total = 2, Registered = DateTime.Now });
+                    _ = db.SaveChanges();
+                    _ = db.Add(new Books() { Name = "Harry Potter 5", Total = 4, Registered = DateTime.Now });
+                    _ = db.SaveChanges();
+                }
             }
             catch (Exception ex)
             {

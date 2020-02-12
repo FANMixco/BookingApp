@@ -10,10 +10,11 @@
     <Folder Include="Classes\" />
     <Folder Include="Classes\DB\" />
     <Folder Include="Views\Library\" />
-    <Folder Include="Views\User\" />
-    <Folder Include="Views\Book\" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
   </ItemGroup>
 </Project>

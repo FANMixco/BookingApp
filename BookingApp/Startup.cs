@@ -25,6 +25,7 @@ namespace BookingApp
             services.AddSession();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.Configure<DBInfoSettings>(Configuration.GetSection("DBInfo"));
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

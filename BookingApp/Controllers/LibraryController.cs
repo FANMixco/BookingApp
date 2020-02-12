@@ -52,6 +52,11 @@ namespace BookingApp.Controllers
                 booksAvailable.ReservedBooks.Add(new ReservatedBooksModel() { Book = book, ReservationId = reservations.ReservedBookId, User = user, Date = reservations.ReservedDate.ToString("yyyy-MM-dd hh:mm") });
             }
 
+            foreach (var users in db.Users)
+            {
+                booksAvailable.Users.Add(new UsersModel { Username = users.Username, Role = users.Role == 0 ? "Admin" : "Reserver", UserId = users.UserId, Registered = users.Registered.ToString("yyyy-MM-dd") });
+            }
+
             return View(booksAvailable);
         }
 
@@ -61,6 +66,11 @@ namespace BookingApp.Controllers
         }
 
         public IActionResult DeleteBook(int id)
+        {
+            return View();
+        }
+
+        public IActionResult CancelReservation(int id)
         {
             return View();
         }
