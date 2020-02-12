@@ -59,6 +59,32 @@ namespace BookingApp.Controllers
             }
         }
 
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public IActionResult Update(int id, string username, string password, string SelectedRole)
+        {
+            try
+            {
+                using var db = new BookingContext();
+
+                var user = db.Users.FirstOrDefault(x => x.UserId == id);
+                if (!string.IsNullOrEmpty(password))
+                {
+                    user.Password = Encryption.Encrypt(password);
+                }
+                user.Username = username;
+                user.Role = int.Parse(SelectedRole);
+                db.Update(user);
+                db.SaveChanges();
+
+                return RedirectToAction("Update", "User", new { user = "Updated" });
+            }
+            catch
+            {
+                return RedirectToAction("Update", "User", new { user = "Error" });
+            }
+        }
+
         public IActionResult Update(int id)
         {
             Role = _httpContextAccessor.HttpContext.Session.GetInt32("role");

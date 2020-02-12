@@ -71,11 +71,16 @@ namespace BookingApp.Controllers
         {
             try
             {
+                var user = _httpContextAccessor.HttpContext.Session.GetString("user");
                 using var db = new BookingContext();
 
                 if (Role == 0 && db.Users.Count(x => x.Role == 0) == 1)
                 {
                     return RedirectToAction("Index", "Library", new { user = "oneAdmin" });
+                }
+                else if (id == db.Users.FirstOrDefault(x => x.Username == user).UserId)
+                {
+                    return RedirectToAction("Index", "Library", new { error = "sameUser" });
                 }
                 else if (db.ReservedBook.Count(x => x.UserId == id) == 0)
                 {
