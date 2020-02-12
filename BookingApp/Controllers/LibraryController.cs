@@ -62,17 +62,66 @@ namespace BookingApp.Controllers
 
         public IActionResult DeleteUser(int id)
         {
-            return View();
+            try
+            {
+                using var db = new BookingContext();
+
+                if (Role == 0 && db.Users.Count(x => x.Role == 0) == 1)
+                {
+                    return RedirectToAction("Index", "Library", new { user = "oneAdmin" });
+                }
+                else if (db.ReservedBook.Count(x => x.UserId == id) == 0)
+                {
+                    db.Remove(new Users() { UserId = id });
+                    db.SaveChanges();
+
+                    return RedirectToAction("Index", "Library", new { user = "deleted" });
+                }
+                return RedirectToAction("Index", "Library", new { book = "reserved" });
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Library", new { user = "error" });
+            }
         }
 
         public IActionResult DeleteBook(int id)
         {
-            return View();
+            try
+            {
+                using var db = new BookingContext();
+
+                if (db.ReservedBook.Count(x => x.BookId == id) == 0)
+                {
+                    db.Remove(new Books() { BookId = id });
+                    db.SaveChanges();
+
+                    return RedirectToAction("Index", "Library", new { book = "deleted" });
+                }
+                return RedirectToAction("Index", "Library", new { book = "reserved" });
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Library", new { book = "error" });
+            }
         }
 
         public IActionResult CancelReservation(int id)
         {
-            return View();
+            try
+            {
+                using var db = new BookingContext();
+
+
+                db.Remove(new ReservedBook() { ReservedBookId = id });
+                db.SaveChanges();
+
+                return RedirectToAction("Index", "Library", new { reservation = "canceled" });
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Library", new { reservation = "error" });
+            }
         }
     }
 }

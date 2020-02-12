@@ -66,7 +66,14 @@ namespace BookingApp.Controllers
                 _httpContextAccessor.HttpContext.Session.SetString("user", username);
                 _httpContextAccessor.HttpContext.Session.SetInt32("role", user.Role);
 
-                return RedirectToAction("Index", "Library");
+                if (user.Role == 0)
+                {
+                    return RedirectToAction("Index", "Library");
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Booking");
+                }
             }
 
             return RedirectToAction("Index", "Home", new { error = "password" });
