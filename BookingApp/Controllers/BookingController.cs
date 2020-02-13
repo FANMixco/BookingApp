@@ -111,9 +111,9 @@ namespace BookingApp.Controllers
             {
                 var user = db.Users.FirstOrDefault(x => x.UserId == reservations.UserId).Username;
 
-                var book = db.Books.FirstOrDefault(x => x.BookId == reservations.BookId).Name;
+                var book = db.Books.FirstOrDefault(x => x.BookId == reservations.BookId);
 
-                booksAvailable.ReservedBooks.Add(new ReservedBooksModel() { Book = book, ReservationId = reservations.ReservedBookId, User = user, Date = reservations.ReservedDate.ToString("yyyy-MM-dd hh:mm") });
+                booksAvailable.ReservedBooks.Add(new ReservedBooksModel() { Book = book.Name, Author = book.Author, ReservationId = reservations.ReservedBookId, User = user, Date = reservations.ReservedDate.ToString("yyyy-MM-dd hh:mm") });
             }
 
             return View(booksAvailable);

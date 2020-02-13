@@ -24,6 +24,7 @@ namespace BookingApp.Models
         public int ReservationId { get; set; }
         public string User { get; set; }
         public string Book { get; set; }
+        public string Author { get; set; }
         public string Date { get; set; }
     }
 

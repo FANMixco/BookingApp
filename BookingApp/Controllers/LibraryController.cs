@@ -1,4 +1,6 @@
 ﻿using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using BookingApp.Classes.DB;
 using BookingApp.Models;
 using Microsoft.AspNetCore.Http;
@@ -8,6 +10,13 @@ namespace BookingApp.Controllers
 {
     public class LibraryController : Controller
     {
+        const string HOST = "smtp.host.com";
+        const string PERSONAL_EMAIL = "your-email@host.com";
+        const string PASSWORD = "your-password";
+        const string SUBJECT = "Reservation canceled";
+        const string BODY = "Your reservation of {0} has been canceled.";
+        const int PORT = 0;
+
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         private int? Role { get; set; }
@@ -55,9 +64,9 @@ namespace BookingApp.Controllers
             {
                 var user = db.Users.FirstOrDefault(x => x.UserId == reservations.UserId).Username;
 
-                var book = db.Books.FirstOrDefault(x => x.BookId == reservations.BookId).Name;
+                var book = db.Books.FirstOrDefault(x => x.BookId == reservations.BookId);
 
-                booksAvailable.ReservedBooks.Add(new ReservedBooksModel() { Book = book, ReservationId = reservations.ReservedBookId, User = user, Date = reservations.ReservedDate.ToString("yyyy-MM-dd hh:mm") });
+                booksAvailable.ReservedBooks.Add(new ReservedBooksModel() { Book = book.Name, Author = book.Author, ReservationId = reservations.ReservedBookId, User = user, Date = reservations.ReservedDate.ToString("yyyy-MM-dd hh:mm") });
             }
 
             foreach (var users in db.Users)
@@ -125,6 +134,12 @@ namespace BookingApp.Controllers
             {
                 using var db = new BookingContext();
 
+                /*//Uncomment it to send emails
+                var reservedBook = db.ReservedBook.FirstOrDefault(x => x.ReservedBookId == id);
+                var email = db.Users.FirstOrDefault(x => x.UserId == reservedBook.UserId).Email;
+                var book = db.Books.FirstOrDefault(x => x.BookId == reservedBook.BookId).Name;
+                SendCancelationEmail(email, book);*/
+
                 db.Remove(new ReservedBook() { ReservedBookId = id });
                 db.SaveChanges();
 
@@ -133,6 +148,39 @@ namespace BookingApp.Controllers
             catch
             {
                 return RedirectToAction("Index", "Library", new { error = "error" });
+            }
+        }
+
+        private void SendCancelationEmail(string email, string book)
+        {
+            try
+            {
+                // Credentials
+                var credentials = new NetworkCredential(PERSONAL_EMAIL, PASSWORD);
+                // Mail message
+                var mail = new MailMessage()
+                {
+                    From = new MailAddress(PERSONAL_EMAIL),
+                    Subject = SUBJECT,
+                    Body = string.Format(BODY, book)
+                };
+                mail.IsBodyHtml = true;
+                mail.To.Add(new MailAddress(email));
+                // Smtp client
+                var client = new SmtpClient()
+                {
+                    Port = PORT,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    UseDefaultCredentials = false,
+                    Host = HOST,
+                    EnableSsl = true,
+                    Credentials = credentials
+                };
+                client.Send(mail);
+            }
+            catch
+            {
+
             }
         }
     }

@@ -60,34 +60,38 @@
                 <h4>Books Available</h4>
                 <dl class="row">
                     <dd class="col-sm-10">
-                        <table class="table">
-                            <tr>
-                                <th>Book</th>
-                                <th>Author</th>
-                                <th>Publication year</th>
-                                <th>Available</th>
-                                <th></th>
-                            </tr>
-                            @foreach (var item in Model.AvailableBooks)
-                            {
+                        <table class="tblResponsive">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Book)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Author)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.PublicationYear)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Available)
-                                    </td>
-                                    <td>
-                                        @Html.ActionLink("Reserve", "Reserve", "Booking", new { id = item.BookId })
-                                    </td>
+                                    <th>Book</th>
+                                    <th>Author</th>
+                                    <th>Publication year</th>
+                                    <th>Available</th>
+                                    <th></th>
                                 </tr>
-                            }
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.AvailableBooks)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Book)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Author)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.PublicationYear)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Available)
+                                        </td>
+                                        <td>
+                                            @Html.ActionLink("Reserve", "Reserve", "Booking", new { id = item.BookId })
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
                         </table>
                     </dd>
                 </dl>
@@ -96,27 +100,34 @@
                 <h4>Reserved Books</h4>
                 <dl class="row">
                     <dd class="col-sm-10">
-                        <table class="table">
-                            <tr>
-                                <th>Book</th>
-                                <th>Date</th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                            @foreach (var item in Model.ReservedBooks)
-                            {
+                        <table class="tblResponsive">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Book)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Date)
-                                    </td>
-                                    <td>
-                                        @Html.ActionLink("Cancel", "Cancel", "Booking", new { id = item.ReservationId }, new { @onclick = "return confirm('Are you sure?')" })
-                                    </td>
+                                    <th>Book</th>
+                                    <th>Author</th>
+                                    <th>Date</th>
+                                    <th></th>
                                 </tr>
-                            }
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.ReservedBooks)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Book)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Author)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Date)
+                                        </td>
+                                        <td>
+                                            @Html.ActionLink("Cancel", "Cancel", "Booking", new { id = item.ReservationId }, new { @onclick = "return confirm('Are you sure?')" })
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
                         </table>
                     </dd>
                 </dl>
@@ -124,3 +135,15 @@
         </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+
+<script>
+    $('.tblResponsive').DataTable({
+        responsive: true
+    });
+</script>
