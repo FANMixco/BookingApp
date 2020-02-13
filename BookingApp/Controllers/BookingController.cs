@@ -102,7 +102,7 @@ namespace BookingApp.Controllers
 
                 var totalCurrentBook = db.ReservedBook.Count(x => x.BookId == book.BookId);
 
-                booksAvailable.AvailableBooks.Add(new AvailableBooksModel() { Book = book.Name, Available = total - totalCurrentBook, BookId = book.BookId });
+                booksAvailable.AvailableBooks.Add(new AvailableBooksModel() { Book = book.Name, Available = total - totalCurrentBook, BookId = book.BookId, Author = book.Author, PublicationYear = book.PublicationYear });
             }
 
             UserID = db.Users.FirstOrDefault(x => x.Username == _httpContextAccessor.HttpContext.Session.GetString("user")).UserId;
@@ -113,10 +113,59 @@ namespace BookingApp.Controllers
 
                 var book = db.Books.FirstOrDefault(x => x.BookId == reservations.BookId).Name;
 
-                booksAvailable.ReservatedBooks.Add(new ReservatedBooksModel() { Book = book, ReservationId = reservations.ReservedBookId, User = user, Date = reservations.ReservedDate.ToString("yyyy-MM-dd hh:mm") });
+                booksAvailable.ReservedBooks.Add(new ReservedBooksModel() { Book = book, ReservationId = reservations.ReservedBookId, User = user, Date = reservations.ReservedDate.ToString("yyyy-MM-dd hh:mm") });
             }
 
             return View(booksAvailable);
         }
+
+
+        //https://docs.microsoft.com/en-us/aspnet/core/data/ef-mvc/sort-filter-page?view=aspnetcore-3.1
+        //    public IActionResult Index(string sortOrder)
+        //    {
+        //        Role = _httpContextAccessor.HttpContext.Session.GetInt32("role");
+
+        //        if (Role == null)
+        //        {
+        //            return RedirectToAction("Index", "Home", new { error = "noLogin" });
+        //        }
+        //        else if (Role != 0)
+        //        {
+        //            return RedirectToAction("Index", "Home", new { error = "wrongRole" });
+        //        }
+
+        //        ViewData["BookSortParm"] = string.IsNullOrEmpty(sortOrder) ? "book_desc" : "";
+        //        //ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+
+        //        using var db = new BookingContext();
+
+
+
+        //        /*
+        //         ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+        //ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+        //var students = from s in _context.Students
+        //               select s;
+        //switch (sortOrder)
+        //{
+        //    case "name_desc":
+        //        students = students.OrderByDescending(s => s.LastName);
+        //        break;
+        //    case "Date":
+        //        students = students.OrderBy(s => s.EnrollmentDate);
+        //        break;
+        //    case "date_desc":
+        //        students = students.OrderByDescending(s => s.EnrollmentDate);
+        //        break;
+        //    default:
+        //        students = students.OrderBy(s => s.LastName);
+        //        break;
+        //}
+        //return View(await students.AsNoTracking().ToListAsync());
+
+        //         */
+
+        //        return View();
+        //    }
     }
 }

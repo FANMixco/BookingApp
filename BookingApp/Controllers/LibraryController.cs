@@ -48,7 +48,7 @@ namespace BookingApp.Controllers
 
                 var totalCurrentBook = db.ReservedBook.Count(x => x.BookId == book.BookId);
 
-                booksAvailable.AvailableBooks.Add(new AvailableBooksModel() { Book = book.Name, Available = total - totalCurrentBook, BookId = book.BookId, Total = book.Total });
+                booksAvailable.AvailableBooks.Add(new AvailableBooksModel() { Book = book.Name, Available = total - totalCurrentBook, BookId = book.BookId, Total = book.Total, Author = book.Author, PublicationYear = book.PublicationYear });
             }
 
             foreach (var reservations in db.ReservedBook)
@@ -57,12 +57,12 @@ namespace BookingApp.Controllers
 
                 var book = db.Books.FirstOrDefault(x => x.BookId == reservations.BookId).Name;
 
-                booksAvailable.ReservedBooks.Add(new ReservatedBooksModel() { Book = book, ReservationId = reservations.ReservedBookId, User = user, Date = reservations.ReservedDate.ToString("yyyy-MM-dd hh:mm") });
+                booksAvailable.ReservedBooks.Add(new ReservedBooksModel() { Book = book, ReservationId = reservations.ReservedBookId, User = user, Date = reservations.ReservedDate.ToString("yyyy-MM-dd hh:mm") });
             }
 
             foreach (var users in db.Users)
             {
-                booksAvailable.Users.Add(new UsersModel { Username = users.Username, Role = users.Role == 0 ? "Admin" : "Reserver", UserId = users.UserId, Registered = users.Registered.ToString("yyyy-MM-dd") });
+                booksAvailable.Users.Add(new UsersModel { Username = users.Username, Role = users.Role == 0 ? "Admin" : "Reserver", UserId = users.UserId, Registered = users.Registered.ToString("yyyy-MM-dd"), Email = users.Email });
             }
 
             return View(booksAvailable);

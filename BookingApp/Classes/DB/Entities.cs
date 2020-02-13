@@ -6,6 +6,7 @@ namespace BookingApp.Classes.DB
         public int UserId { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
+        public string Email { get; set; }
         public int Role { get; set; }
         public DateTime Registered { get; set; }
     }
@@ -15,6 +16,8 @@ namespace BookingApp.Classes.DB
         public int BookId { get; set; }
         public string Name { get; set; }
         public int Total { get; set; }
+        public string Author { get; set; }
+        public int? PublicationYear { get; set; }
         public DateTime Registered { get; set; }
     }
 

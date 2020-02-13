@@ -35,8 +35,9 @@ namespace BookingApp.Controllers
             return View(new UserCreateModel());
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost]
-        public IActionResult Index(string username, string password, string SelectedRole)
+        public IActionResult Index(string username, string email, string password, string SelectedRole)
         {
             try
             {
@@ -44,7 +45,7 @@ namespace BookingApp.Controllers
 
                 if (db.Users.Count(x => x.Username == username) == 0)
                 {
-                    _ = db.Add(new Users() { Username = username, Registered = DateTime.Now, Role = int.Parse(SelectedRole), Password = Encryption.Encrypt(password) });
+                    _ = db.Add(new Users() { Username = username, Email = email, Registered = DateTime.Now, Role = int.Parse(SelectedRole), Password = Encryption.Encrypt(password) });
                     _ = db.SaveChanges();
 
                     return RedirectToAction("Index", "User", new { msg = "created" });
@@ -62,7 +63,7 @@ namespace BookingApp.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public IActionResult Update(int id, string username, string password, string SelectedRole)
+        public IActionResult Update(int id, string username, string email, string password, string SelectedRole)
         {
             try
             {
@@ -74,6 +75,7 @@ namespace BookingApp.Controllers
                     user.Password = Encryption.Encrypt(password);
                 }
                 user.Username = username;
+                user.Email = email;
                 user.Role = int.Parse(SelectedRole);
                 db.Update(user);
                 db.SaveChanges();
@@ -110,6 +112,7 @@ namespace BookingApp.Controllers
                 model.ID = id;
                 model.Username = users.Username;
                 model.SelectedRole = users.Role;
+                model.Email = users.Email;
             }
             else
             {

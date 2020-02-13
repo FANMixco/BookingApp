@@ -63,6 +63,8 @@
                         <table class="table">
                             <tr>
                                 <th>Book</th>
+                                <th>Author</th>
+                                <th>Publication year</th>
                                 <th>Available</th>
                                 <th></th>
                             </tr>
@@ -71,6 +73,12 @@
                                 <tr>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Book)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Author)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.PublicationYear)
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Available)
@@ -95,7 +103,7 @@
                                 <th></th>
                                 <th></th>
                             </tr>
-                            @foreach (var item in Model.ReservatedBooks)
+                            @foreach (var item in Model.ReservedBooks)
                             {
                                 <tr>
                                     <td>

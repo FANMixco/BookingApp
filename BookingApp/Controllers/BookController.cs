@@ -31,7 +31,7 @@ namespace BookingApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(string book, string copies)
+        public IActionResult Index(string book, string author, string year, string copies)
         {
             try
             {
@@ -39,7 +39,14 @@ namespace BookingApp.Controllers
 
                 if (db.Books.Count(x => x.Name == book) == 0)
                 {
-                    db.Add(new Books() { Name = book, Total = int.Parse(copies) });
+                    int? yearVal = null;
+
+                    if (!string.IsNullOrEmpty(year))
+                    {
+                        yearVal = int.Parse(year);
+                    }
+
+                    db.Add(new Books() { Name = book, Total = int.Parse(copies), Author= author, PublicationYear = yearVal });
                     db.SaveChanges();
                     return RedirectToAction("Index", "Book", new { msg = "added" });
                 }
@@ -56,7 +63,7 @@ namespace BookingApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Update(int id, string book, string copies)
+        public IActionResult Update(int id, string book, string author, string year, string copies)
         {
             try
             {
@@ -73,7 +80,14 @@ namespace BookingApp.Controllers
                 //bookTotal == 0 is a new name
                 if ((isOldName || isRenamed) && copiesMakeLogic)
                 {
-                    UpdateBook(id, book, copies, db);
+                    int? yearVal = null;
+
+                    if (!string.IsNullOrEmpty(year))
+                    {
+                        yearVal = int.Parse(year);
+                    }
+
+                    UpdateBook(id, book, author, yearVal, copies, db);
                     return RedirectToAction("Update", "Book", new { id, msg = "updated" });
                 }
                 else if (!copiesMakeLogic)
@@ -92,10 +106,12 @@ namespace BookingApp.Controllers
             catch { return RedirectToAction("Update", "Home", new { id, error = "error" }); }
         }
 
-        private static void UpdateBook(int id, string book, string copies, BookingContext db)
+        private static void UpdateBook(int id, string book, string author, int? year, string copies, BookingContext db)
         {
             var bookData = db.Books.FirstOrDefault(x => x.BookId == id);
             bookData.Name = book;
+            bookData.Author = author;
+            bookData.PublicationYear = year;
             bookData.Total = int.Parse(copies);
 
             db.Update(bookData);
@@ -118,7 +134,7 @@ namespace BookingApp.Controllers
             var book = db.Books.FirstOrDefault(x => x.BookId == id);
             if (book != null)
             {
-                var model = new Models.BookUpdateModel() { ID = id, Book = book.Name, Copies = book.Total };
+                var model = new Models.BookUpdateModel() { ID = id, Book = book.Name, Copies = book.Total, Author = book.Author, Year = book.PublicationYear };
                 return View(model);
             }
             else

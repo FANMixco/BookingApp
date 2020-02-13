@@ -5,7 +5,7 @@ namespace BookingApp.Models
     public class AvailableBooksViewModel
     {
         public List<AvailableBooksModel> AvailableBooks = new List<AvailableBooksModel>();
-        public List<ReservatedBooksModel> ReservedBooks = new List<ReservatedBooksModel>();
+        public List<ReservedBooksModel> ReservedBooks = new List<ReservedBooksModel>();
         public List<UsersModel> Users = new List<UsersModel>();
     }
 
@@ -13,11 +13,13 @@ namespace BookingApp.Models
     {
         public int BookId { get; set; }
         public string Book { get; set; }
+        public string Author { get; set; }
+        public int? PublicationYear { get; set; }
         public int Available { get; set; }
         public int Total { get; set; }
     }
 
-    public class ReservatedBooksModel
+    public class ReservedBooksModel
     {
         public int ReservationId { get; set; }
         public string User { get; set; }
@@ -29,6 +31,7 @@ namespace BookingApp.Models
     {
         public int UserId { get; set; }
         public string Username { get; set; }
+        public string Email { get; set; }
         public string Role { get; set; }
         public string Registered { get; set; }
     }
