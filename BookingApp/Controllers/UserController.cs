@@ -43,7 +43,11 @@ namespace BookingApp.Controllers
             {
                 using var db = new BookingContext();
 
-                if (db.Users.Count(x => x.Username == username) == 0)
+                if (db.Users.Count(x => x.Email == email) > 0)
+                {
+                    return RedirectToAction("Update", "User", new { error = "sameEmail" });
+                }
+                else if (db.Users.Count(x => x.Username == username) == 0)
                 {
                     _ = db.Add(new Users() { Username = username, Email = email, Registered = DateTime.Now, Role = int.Parse(SelectedRole), Password = Encryption.Encrypt(password) });
                     _ = db.SaveChanges();
@@ -70,6 +74,14 @@ namespace BookingApp.Controllers
                 using var db = new BookingContext();
 
                 var user = db.Users.FirstOrDefault(x => x.UserId == id);
+
+                var oldEmail = db.Users.FirstOrDefault(x => x.Username == username).Email;
+
+                if (oldEmail != email && db.Users.Count(x => x.Email == email) > 0)
+                {
+                    return RedirectToAction("Update", "User", new { error = "sameEmail" });
+                }
+
                 if (!string.IsNullOrEmpty(password))
                 {
                     user.Password = Encryption.Encrypt(password);

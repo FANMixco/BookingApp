@@ -13,6 +13,11 @@
             Microsoft.Extensions.Primitives.StringValues queryVal;
 
             if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+               queryVal.FirstOrDefault() == "sameEmail")
+            {
+                <p class="text-danger">This email is already registered.</p>
+            }
+            else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
                queryVal.FirstOrDefault() == "error")
             {
                 <p class="text-danger">Try again later.</p>
