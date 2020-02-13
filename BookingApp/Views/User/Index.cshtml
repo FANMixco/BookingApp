@@ -4,20 +4,40 @@
 
 @model BookingApp.Models.UserCreateModel
 
-<div>
-    @Html.ActionLink("Back", "Index", "Library")
-    <form method="POST">
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" class="form-control" name="username" maxlength="16" id="username" aria-describedby="username" placeholder="Username" required />
-        </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" class="form-control" id="password" maxlength="16" name="password" placeholder="Password" required />
-        </div>
-        <div class="form-group">
-            <select asp-for="SelectedRole" asp-items="Model.RolesModel" class="form-control"></select>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+<div class="container">
+    <div class="row">
+        @Html.ActionLink("Back", "Index", "Library")
+    </div>
+    <div class="row">
+        @{
+            Microsoft.Extensions.Primitives.StringValues queryVal;
+
+            if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+               queryVal.FirstOrDefault() == "error")
+            {
+                <p class="text-danger">Try again later.</p>
+            }
+            else if (Context.Request.Query.TryGetValue("msg", out queryVal) &&
+              queryVal.FirstOrDefault() == "created")
+            {
+                <p class="text-success">The user was created.</p>
+            }
+        }
+    </div>
+    <div class="row">
+        <form method="POST">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" name="username" maxlength="16" id="username" aria-describedby="username" placeholder="Username" required />
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" maxlength="16" name="password" placeholder="Password" required />
+            </div>
+            <div class="form-group">
+                <select asp-for="SelectedRole" asp-items="Model.RolesModel" class="form-control"></select>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
 </div>

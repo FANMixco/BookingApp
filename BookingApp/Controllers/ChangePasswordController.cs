@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BookingApp.Classes;
+﻿using BookingApp.Classes;
 using BookingApp.Classes.DB;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace BookingApp.Controllers
 {
@@ -17,6 +14,7 @@ namespace BookingApp.Controllers
 
             if (role == null)
             {
+                _httpContextAccessor.HttpContext.Session.Clear();
                 return RedirectToAction("Index", "Home", new { error = "NoLogin" });
             }
 
@@ -34,34 +32,34 @@ namespace BookingApp.Controllers
         [HttpPost]
         public IActionResult Index(string oldPassword, string newPassword, string rPassword)
         {
-            if (newPassword != rPassword)
+            try
             {
-                return RedirectToAction("Index", "ChangePassword", new { error = "WrongPasswords" });
+                if (newPassword != rPassword)
+                {
+                    return RedirectToAction("Index", "ChangePassword", new { error = "wrongPasswords" });
+                }
+
+                using var db = new BookingContext();
+
+                var username = _httpContextAccessor.HttpContext.Session.GetString("user");
+
+                var user = db.Users.FirstOrDefault(x => x.Username == username);
+
+                if (Encryption.Encrypt(oldPassword).Equals(user.Password))
+                {
+                    user.Password = Encryption.Encrypt(newPassword);
+                    db.Update(user);
+                    db.SaveChanges();
+                    return RedirectToAction("Index", "ChangePassword", new { msg = "updated" });
+                }
+                else
+                {
+                    return RedirectToAction("Index", "ChangePassword", new { error = "wrongOld" });
+                }
             }
-
-            var role = _httpContextAccessor.HttpContext.Session.GetInt32("role");
-
-            if (role == null)
+            catch
             {
-                return RedirectToAction("Index", "Home", new { error = "NoLogin" });
-            }
-
-            using var db = new BookingContext();
-
-            var username = _httpContextAccessor.HttpContext.Session.GetString("user");
-
-            var user = db.Users.FirstOrDefault(x => x.Username == username);
-
-            if (Encryption.Encrypt(oldPassword).Equals(user.Password))
-            {
-                user.Password = Encryption.Encrypt(newPassword);
-                db.Update(user);
-                db.SaveChanges();
-                return RedirectToAction("Index", "ChangePassword", new { message = "Updated" });
-            }
-            else
-            {
-                return RedirectToAction("Index", "ChangePassword", new { error = "WrongOld" });
+                return RedirectToAction("Index", "ChangePassword", new { error = "error" });
             }
         }
     }

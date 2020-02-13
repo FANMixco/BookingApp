@@ -11,6 +11,8 @@ namespace BookingApp.Controllers
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
+        const int MAX_COPIES = 2;
+
         private int? Role { get; set; }
 
         private static int UserID { get; set; }
@@ -33,18 +35,29 @@ namespace BookingApp.Controllers
             {
                 using var db = new BookingContext();
 
-                if (db.ReservedBook.Count(x => x.BookId == id && x.UserId == UserID) < 2)
-                {
-                    db.Add(new ReservedBook() { BookId = id, UserId = UserID, ReservedDate = DateTime.Now });
-                    db.SaveChanges();
-                    return RedirectToAction("Index", "Booking", new { message = "reserved" });
-                }
+                var isBookAvailable = (db.Books.FirstOrDefault(x => x.BookId == id).Total - db.ReservedBook.Count(x => x.BookId == id)) >= 1;
 
-                return RedirectToAction("Index", "Booking", new { message = "tooMany" });
+                if (isBookAvailable)
+                {
+                    if (db.ReservedBook.Count(x => x.BookId == id && x.UserId == UserID) < MAX_COPIES)
+                    {
+                        db.Add(new ReservedBook() { BookId = id, UserId = UserID, ReservedDate = DateTime.Now });
+                        db.SaveChanges();
+                        return RedirectToAction("Index", "Booking", new { msg = "reserved" });
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Booking", new { error = "tooMany" });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Booking", new { error = "unavailable" });
+                }
             }
             catch
             {
-                return RedirectToAction("Index", "Booking", new { message = "error" });
+                return RedirectToAction("Index", "Booking", new { error = "error" });
             }
         }
 
@@ -57,11 +70,11 @@ namespace BookingApp.Controllers
                 db.Remove(new ReservedBook() { ReservedBookId = id });
                 db.SaveChanges();
 
-                return RedirectToAction("Index", "Booking", new { reservation = "canceled" });
+                return RedirectToAction("Index", "Booking", new { msg = "canceled" });
             }
             catch
             {
-                return RedirectToAction("Index", "Booking", new { reservation = "error" });
+                return RedirectToAction("Index", "Booking", new { error = "error" });
             }
         }
 
@@ -71,11 +84,12 @@ namespace BookingApp.Controllers
 
             if (Role == null)
             {
-                return RedirectToAction("Index", "Home", new { error = "NoLogin" });
+                return RedirectToAction("Index", "Home", new { error = "noLogin" });
             }
             else if (Role != 1)
             {
-                return RedirectToAction("Index", "Home", new { error = "WrongRole" });
+                _httpContextAccessor.HttpContext.Session.Clear();
+                return RedirectToAction("Index", "Home", new { error = "wrongRole" });
             }
 
             using var db = new BookingContext();
@@ -93,7 +107,7 @@ namespace BookingApp.Controllers
 
             UserID = db.Users.FirstOrDefault(x => x.Username == _httpContextAccessor.HttpContext.Session.GetString("user")).UserId;
 
-            foreach (var reservations in db.ReservedBook.Where(x=>x.UserId == UserID))
+            foreach (var reservations in db.ReservedBook.Where(x => x.UserId == UserID))
             {
                 var user = db.Users.FirstOrDefault(x => x.UserId == reservations.UserId).Username;
 

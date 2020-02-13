@@ -3,21 +3,51 @@
     ViewData["Title"] = "Change Password";
 }
 
-<div>
-    @Html.ActionLink("Back", "Index", "Home")
-    <form method="POST">
-        <div class="form-group">
-            <label for="oldPassword">Old password</label>
-            <input type="password" class="form-control" name="oldPassword" maxlength="16" id="oldPassword" aria-describedby="username" placeholder="Old password" required />
-        </div>
-        <div class="form-group">
-            <label for="newPassword">New password</label>
-            <input type="password" class="form-control" id="newPassword" maxlength="16" name="newPassword" placeholder="New password" required />
-        </div>
-        <div class="form-group">
-            <label for="rPassword">Repeat password</label>
-            <input type="password" class="form-control" id="rPassword" maxlength="16" name="rPassword" placeholder="Repeat password" required />
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+<div class="container">
+    <div class="row">
+        @{
+            Microsoft.Extensions.Primitives.StringValues queryVal;
+
+            if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+                queryVal.FirstOrDefault() == "wrongPasswords")
+            {
+                <p class="text-danger">Your new password and confirmation are different.</p>
+            }
+            else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+                queryVal.FirstOrDefault() == "wrongOld")
+            {
+                <p class="text-danger">Your old password is wrong.</p>
+            }
+            else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+               queryVal.FirstOrDefault() == "error")
+            {
+                <p class="text-danger">Try again later.</p>
+            }
+            else if (Context.Request.Query.TryGetValue("msg", out queryVal) &&
+              queryVal.FirstOrDefault() == "updated")
+            {
+                <p class="text-success">Your password was updated.</p>
+            }
+        }
+    </div>
+    <div class="row">
+        @Html.ActionLink("Back", "Index", "Home")
+    </div>
+    <div class="row">
+        <form method="POST">
+            <div class="form-group">
+                <label for="oldPassword">Old password</label>
+                <input type="password" class="form-control" name="oldPassword" maxlength="16" id="oldPassword" aria-describedby="username" placeholder="Old password" required />
+            </div>
+            <div class="form-group">
+                <label for="newPassword">New password</label>
+                <input type="password" class="form-control" id="newPassword" maxlength="16" name="newPassword" placeholder="New password" required />
+            </div>
+            <div class="form-group">
+                <label for="rPassword">Repeat password</label>
+                <input type="password" class="form-control" id="rPassword" maxlength="16" name="rPassword" placeholder="Repeat password" required />
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
 </div>

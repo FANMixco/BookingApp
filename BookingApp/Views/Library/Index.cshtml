@@ -13,128 +13,181 @@
             @Html.ActionLink("Change Password", "Index", "ChangePassword")
         </div>
     </div>
-    <ul class="nav nav-tabs">
-        <li class="nav-item">
-            <a class="nav-link active" href="#booksTab" data-toggle="tab">Books</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#reservations" data-toggle="tab">Reservations</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#users" data-toggle="tab">Users</a>
-        </li>
-    </ul>
+    <div class="row">
+        @{
+            Microsoft.Extensions.Primitives.StringValues queryVal;
 
-    <div class="tab-content clearfix">
-        <div class="tab-pane active" id="booksTab">
-            <h4>Books Available</h4>
-            @Html.ActionLink("New", "Index", "Book")
-            <dl class="row">
-                <dd class="col-sm-10">
-                    <table class="table">
-                        <tr>
-                            <th>Book</th>
-                            <th>Available</th>
-                            <th>Total</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                        @foreach (var item in Model.AvailableBooks)
-                        {
+            if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+                queryVal.FirstOrDefault() == "reserved")
+            {
+                <p class="text-danger">There is reservation linked. Cancel it before.</p>
+            }
+            else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+                queryVal.FirstOrDefault() == "oneAdmin")
+            {
+                <p class="text-danger">There is only one admin.</p>
+            }
+            else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+               queryVal.FirstOrDefault() == "sameUser")
+            {
+                <p class="text-danger">You cannot delete yourself.</p>
+            }
+            else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+               queryVal.FirstOrDefault() == "wrongUser")
+            {
+                <p class="text-danger">You cannot edit unexisting users.</p>
+            }
+            else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+               queryVal.FirstOrDefault() == "wrongBook")
+            {
+                <p class="text-danger">You cannot edit unexisting books.</p>
+            }
+            else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+               queryVal.FirstOrDefault() == "error")
+            {
+                <p class="text-danger">Try again later.</p>
+            }
+            else if (Context.Request.Query.TryGetValue("msg", out queryVal) &&
+              queryVal.FirstOrDefault() == "userDeleted")
+            {
+                <p class="text-success">The user was deleted.</p>
+            }
+            else if (Context.Request.Query.TryGetValue("msg", out queryVal) &&
+              queryVal.FirstOrDefault() == "bookDeleted")
+            {
+                <p class="text-success">The book was deleted.</p>
+            }
+            else if (Context.Request.Query.TryGetValue("msg", out queryVal) &&
+              queryVal.FirstOrDefault() == "reservationCanceled")
+            {
+                <p class="text-success">The reservation was canceled.</p>
+            }
+        }
+    </div>
+    <div>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#booksTab" data-toggle="tab">Books</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#reservations" data-toggle="tab">Reservations</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#users" data-toggle="tab">Users</a>
+            </li>
+        </ul>
+
+        <div class="tab-content clearfix">
+            <div class="tab-pane active" id="booksTab">
+                <h4>Books Available</h4>
+                @Html.ActionLink("New", "Index", "Book")
+                <dl class="row">
+                    <dd class="col-sm-10">
+                        <table class="table">
                             <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Book)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Available)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Total)
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Edit", "Update", "Book", new { id = item.BookId })
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Delete", "DeleteBook", "Library", new { id = item.BookId })
-                                </td>
+                                <th>Book</th>
+                                <th>Available</th>
+                                <th>Total</th>
+                                <th></th>
+                                <th></th>
                             </tr>
-                        }
-                    </table>
-                </dd>
-            </dl>
-        </div>
-        <div class="tab-pane" id="reservations">
-            <h4>Reserved Books</h4>
-            <dl class="row">
-                <dd class="col-sm-10">
-                    <table class="table">
-                        <tr>
-                            <th>User</th>
-                            <th>Book</th>
-                            <th>Date</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                        @foreach (var item in Model.ReservedBooks)
-                        {
+                            @foreach (var item in Model.AvailableBooks)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Book)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Available)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Total)
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Edit", "Update", "Book", new { id = item.BookId })
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Delete", "DeleteBook", "Library", new { id = item.BookId }, new { @onclick = "return confirm('Are you sure?')" })
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </dd>
+                </dl>
+            </div>
+            <div class="tab-pane" id="reservations">
+                <h4>Reserved Books</h4>
+                <dl class="row">
+                    <dd class="col-sm-10">
+                        <table class="table">
                             <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.User)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Book)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Date)
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Edit", "Edit", "Book", new { id = item.ReservationId })
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Cancel", "CancelReservation", "Library", new { id = item.ReservationId })
-                                </td>
+                                <th>User</th>
+                                <th>Book</th>
+                                <th>Date</th>
+                                <th></th>
+                                <th></th>
                             </tr>
-                        }
-                    </table>
-                </dd>
-            </dl>
-        </div>
-        <div class="tab-pane" id="users">
-            <h4>Users</h4>
-            @Html.ActionLink("New", "Index", "User")
-            <dl class="row">
-                <dd class="col-sm-10">
-                    <table class="table">
-                        <tr>
-                            <th>Username</th>
-                            <th>Role</th>
-                            <th>Registered</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                        @foreach (var item in Model.Users)
-                        {
+                            @foreach (var item in Model.ReservedBooks)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.User)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Book)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Date)
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Edit", "Edit", "Book", new { id = item.ReservationId })
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Cancel", "CancelReservation", "Library", new { id = item.ReservationId }, new { @onclick = "return confirm('Are you sure?')" })
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </dd>
+                </dl>
+            </div>
+            <div class="tab-pane" id="users">
+                <h4>Users</h4>
+                @Html.ActionLink("New", "Index", "User")
+                <dl class="row">
+                    <dd class="col-sm-10">
+                        <table class="table">
                             <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Username)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Role)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Registered)
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Edit", "Edit", "User", new { id = item.UserId })
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Delete", "DeleteUser", "Library", new { id = item.UserId })
-                                </td>
+                                <th>Username</th>
+                                <th>Role</th>
+                                <th>Registered</th>
+                                <th></th>
+                                <th></th>
                             </tr>
-                        }
-                    </table>
-                </dd>
-            </dl>
+                            @foreach (var item in Model.Users)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Username)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Role)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Registered)
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Edit", "Edit", "User", new { id = item.UserId })
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Delete", "DeleteUser", "Library", new { id = item.UserId }, new { @onclick = "return confirm('Are you sure?')" })
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </dd>
+                </dl>
+            </div>
         </div>
-	</div>
+    </div>
 </div>

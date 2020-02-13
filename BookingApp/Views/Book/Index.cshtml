@@ -2,17 +2,47 @@
     ViewData["Title"] = "New book";
 }
 
-<div>
-    @Html.ActionLink("Back", "Index", "Library")
-    <form method="POST">
-        <div class="form-group">
-            <label for="book">Book</label>
-            <input type="text" class="form-control" name="book" id="book" maxlength="50" aria-describedby="bookName" placeholder="Book title" required>
-        </div>
-        <div class="form-group">
-            <label for="copies">Copies</label>
-            <input type="number" class="form-control" id="copies" name="copies" min="1" placeholder="Copies" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+<div class="container">
+    <div class="row">
+        @{
+            Microsoft.Extensions.Primitives.StringValues queryVal;
+
+            if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+                queryVal.FirstOrDefault() == "wrongName")
+            {
+                <p class="text-danger">The book already exist.</p>
+            }
+            else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+                queryVal.FirstOrDefault() == "lessBooks")
+            {
+                <p class="text-danger">You cannot have less books than the reserved ones.</p>
+            }
+            else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+               queryVal.FirstOrDefault() == "error")
+            {
+                <p class="text-danger">Try again later.</p>
+            }
+            else if (Context.Request.Query.TryGetValue("msg", out queryVal) &&
+              queryVal.FirstOrDefault() == "updated")
+            {
+                <p class="text-success">The book was updated.</p>
+            }
+        }
+    </div>
+    <div class="row">
+        @Html.ActionLink("Back", "Index", "Library")
+    </div>
+    <div class="row">
+        <form method="POST">
+            <div class="form-group">
+                <label for="book">Book</label>
+                <input type="text" class="form-control" name="book" id="book" maxlength="50" aria-describedby="bookName" placeholder="Book title" required>
+            </div>
+            <div class="form-group">
+                <label for="copies">Copies</label>
+                <input type="number" class="form-control" id="copies" name="copies" min="1" placeholder="Copies" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
 </div>

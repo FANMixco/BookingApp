@@ -24,11 +24,12 @@ namespace BookingApp.Controllers
 
             if (Role == null)
             {
-                return RedirectToAction("Index", "Home", new { error = "NoLogin" });
+                return RedirectToAction("Index", "Home", new { error = "noLogin" });
             }
             else if (Role != 0)
             {
-                return RedirectToAction("Index", "Home", new { error = "WrongRole" });
+                _httpContextAccessor.HttpContext.Session.Clear();
+                return RedirectToAction("Index", "Home", new { error = "wrongRole" });
             }
 
             return View(new UserCreateModel());
@@ -37,25 +38,25 @@ namespace BookingApp.Controllers
         [HttpPost]
         public IActionResult Index(string username, string password, string SelectedRole)
         {
-            using var db = new BookingContext();
-
-            if (db.Users.Count(x => x.Username == username) == 0)
+            try
             {
-                try
+                using var db = new BookingContext();
+
+                if (db.Users.Count(x => x.Username == username) == 0)
                 {
                     _ = db.Add(new Users() { Username = username, Registered = DateTime.Now, Role = int.Parse(SelectedRole), Password = Encryption.Encrypt(password) });
                     _ = db.SaveChanges();
 
-                    return RedirectToAction("Index", "User", new { user = "Created" });
+                    return RedirectToAction("Index", "User", new { msg = "created" });
                 }
-                catch
+                else
                 {
-                    return RedirectToAction("Index", "User", new { user = "Error" });
+                    return RedirectToAction("Index", "User", new { error = "exist" });
                 }
             }
-            else
+            catch
             {
-                return RedirectToAction("Index", "User", new { user = "Exist" });
+                return RedirectToAction("Index", "User", new { error = "error" });
             }
         }
 
@@ -77,11 +78,11 @@ namespace BookingApp.Controllers
                 db.Update(user);
                 db.SaveChanges();
 
-                return RedirectToAction("Update", "User", new { user = "Updated" });
+                return RedirectToAction("Update", "User", new { msg = "updated" });
             }
             catch
             {
-                return RedirectToAction("Update", "User", new { user = "Error" });
+                return RedirectToAction("Update", "User", new { error = "error" });
             }
         }
 
@@ -91,11 +92,12 @@ namespace BookingApp.Controllers
 
             if (Role == null)
             {
-                return RedirectToAction("Index", "Home", new { error = "NoLogin" });
+                return RedirectToAction("Index", "Home", new { error = "noLogin" });
             }
             else if (Role != 0)
             {
-                return RedirectToAction("Index", "Home", new { error = "WrongRole" });
+                _httpContextAccessor.HttpContext.Session.Clear();
+                return RedirectToAction("Index", "Home", new { error = "wrongRole" });
             }
 
             UserUpdateModel model = new UserUpdateModel();
@@ -111,7 +113,7 @@ namespace BookingApp.Controllers
             }
             else
             {
-                RedirectToAction("Index", "Library", new { error = "WrongUser" });
+                RedirectToAction("Index", "Library", new { error = "wrongUser" });
             }
 
             return View(model);

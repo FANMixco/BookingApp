@@ -30,11 +30,12 @@ namespace BookingApp.Controllers
 
             if (Role == null)
             {
-                return RedirectToAction("Index", "Home", new { error = "NoLogin" });
+                return RedirectToAction("Index", "Home", new { error = "noLogin" });
             }
             else if (Role != 0)
             {
-                return RedirectToAction("Index", "Home", new { error = "WrongRole" });
+                _httpContextAccessor.HttpContext.Session.Clear();
+                return RedirectToAction("Index", "Home", new { error = "wrongRole" });
             }
 
             using var db = new BookingContext();
@@ -76,7 +77,7 @@ namespace BookingApp.Controllers
 
                 if (Role == 0 && db.Users.Count(x => x.Role == 0) == 1)
                 {
-                    return RedirectToAction("Index", "Library", new { user = "oneAdmin" });
+                    return RedirectToAction("Index", "Library", new { error = "oneAdmin" });
                 }
                 else if (id == db.Users.FirstOrDefault(x => x.Username == user).UserId)
                 {
@@ -87,13 +88,13 @@ namespace BookingApp.Controllers
                     db.Remove(new Users() { UserId = id });
                     db.SaveChanges();
 
-                    return RedirectToAction("Index", "Library", new { user = "deleted" });
+                    return RedirectToAction("Index", "Library", new { msg = "userDeleted" });
                 }
-                return RedirectToAction("Index", "Library", new { book = "reserved" });
+                return RedirectToAction("Index", "Library", new { error = "reserved" });
             }
             catch
             {
-                return RedirectToAction("Index", "Library", new { user = "error" });
+                return RedirectToAction("Index", "Library", new { error = "error" });
             }
         }
 
@@ -108,13 +109,13 @@ namespace BookingApp.Controllers
                     db.Remove(new Books() { BookId = id });
                     db.SaveChanges();
 
-                    return RedirectToAction("Index", "Library", new { book = "deleted" });
+                    return RedirectToAction("Index", "Library", new { msg = "bookDeleted" });
                 }
-                return RedirectToAction("Index", "Library", new { book = "reserved" });
+                return RedirectToAction("Index", "Library", new { error = "reserved" });
             }
             catch
             {
-                return RedirectToAction("Index", "Library", new { book = "error" });
+                return RedirectToAction("Index", "Library", new { error = "error" });
             }
         }
 
@@ -127,11 +128,11 @@ namespace BookingApp.Controllers
                 db.Remove(new ReservedBook() { ReservedBookId = id });
                 db.SaveChanges();
 
-                return RedirectToAction("Index", "Library", new { reservation = "canceled" });
+                return RedirectToAction("Index", "Library", new { msg = "reservationCanceled" });
             }
             catch
             {
-                return RedirectToAction("Index", "Library", new { reservation = "error" });
+                return RedirectToAction("Index", "Library", new { error = "error" });
             }
         }
     }
