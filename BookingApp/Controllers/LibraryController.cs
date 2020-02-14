@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using BookingApp.Classes.DB;
@@ -16,6 +17,7 @@ namespace BookingApp.Controllers
         const string SUBJECT = "Reservation canceled";
         const string BODY = "Your reservation of {0} has been canceled.";
         const int PORT = 0;
+        const int RETURN_DAYS = 2;
 
         private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -55,7 +57,7 @@ namespace BookingApp.Controllers
             {
                 var total = book.Total;
 
-                var totalCurrentBook = db.ReservedBook.Count(x => x.BookId == book.BookId);
+                var totalCurrentBook = db.ReservedBook.Count(x => x.BookId == book.BookId && x.ReturnedDate == null);
 
                 booksAvailable.AvailableBooks.Add(new AvailableBooksModel() { Book = book.Name, Available = total - totalCurrentBook, BookId = book.BookId, Total = book.Total, Author = book.Author, PublicationYear = book.PublicationYear });
             }
@@ -140,6 +142,62 @@ namespace BookingApp.Controllers
                     return RedirectToAction("Index", "Library", new { msg = "bookDeleted" });
                 }
                 return RedirectToAction("Index", "Library", new { error = "reserved" });
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Library", new { error = "error" });
+            }
+        }
+
+        public IActionResult CollectBook(int id)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return RedirectToAction("Index", "Library");
+                }
+
+                using var db = new BookingContext();
+
+                var reservedBook = db.ReservedBook.FirstOrDefault(x => x.ReservedBookId == id);
+
+                reservedBook.CollectedDate = DateTime.Now;
+
+                reservedBook.ReturnDate = DateTime.Now.AddDays(RETURN_DAYS);
+
+                db.Update(reservedBook);
+
+                db.SaveChanges();
+
+                return RedirectToAction("Index", "Library", new { msg = "collected" });
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Library", new { error = "error" });
+            }
+        }
+
+        public IActionResult ReturnedBook(int id)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return RedirectToAction("Index", "Library");
+                }
+
+                using var db = new BookingContext();
+
+                var reservedBook = db.ReservedBook.FirstOrDefault(x => x.ReservedBookId == id);
+
+                reservedBook.ReturnedDate = DateTime.Now;
+
+                db.Update(reservedBook);
+
+                db.SaveChanges();
+
+                return RedirectToAction("Index", "Library", new { msg = "returned" });
             }
             catch
             {

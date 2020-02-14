@@ -40,7 +40,7 @@ namespace BookingApp.Controllers
 
                 using var db = new BookingContext();
 
-                var isBookAvailable = (db.Books.FirstOrDefault(x => x.BookId == id).Total - db.ReservedBook.Count(x => x.BookId == id)) >= 1;
+                var isBookAvailable = (db.Books.FirstOrDefault(x => x.BookId == id).Total - db.ReservedBook.Count(x => x.BookId == id && x.ReturnedDate == null)) >= 1;
 
                 if (isBookAvailable)
                 {
@@ -110,7 +110,7 @@ namespace BookingApp.Controllers
             {
                 var total = book.Total;
 
-                var totalCurrentBook = db.ReservedBook.Count(x => x.BookId == book.BookId);
+                var totalCurrentBook = db.ReservedBook.Count(x => x.BookId == book.BookId && x.ReturnedDate == null);
 
                 booksAvailable.AvailableBooks.Add(new AvailableBooksModel() { Book = book.Name, Available = total - totalCurrentBook, BookId = book.BookId, Author = book.Author, PublicationYear = book.PublicationYear });
             }
