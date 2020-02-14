@@ -33,6 +33,11 @@ namespace BookingApp.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return RedirectToAction("Index", "Booking");
+                }
+
                 using var db = new BookingContext();
 
                 var isBookAvailable = (db.Books.FirstOrDefault(x => x.BookId == id).Total - db.ReservedBook.Count(x => x.BookId == id)) >= 1;
@@ -65,6 +70,11 @@ namespace BookingApp.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return RedirectToAction("Index", "Booking");
+                }
+
                 using var db = new BookingContext();
 
                 db.Remove(new ReservedBook() { ReservedBookId = id });
@@ -118,54 +128,5 @@ namespace BookingApp.Controllers
 
             return View(booksAvailable);
         }
-
-
-        //https://docs.microsoft.com/en-us/aspnet/core/data/ef-mvc/sort-filter-page?view=aspnetcore-3.1
-        //    public IActionResult Index(string sortOrder)
-        //    {
-        //        Role = _httpContextAccessor.HttpContext.Session.GetInt32("role");
-
-        //        if (Role == null)
-        //        {
-        //            return RedirectToAction("Index", "Home", new { error = "noLogin" });
-        //        }
-        //        else if (Role != 0)
-        //        {
-        //            return RedirectToAction("Index", "Home", new { error = "wrongRole" });
-        //        }
-
-        //        ViewData["BookSortParm"] = string.IsNullOrEmpty(sortOrder) ? "book_desc" : "";
-        //        //ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
-
-        //        using var db = new BookingContext();
-
-
-
-        //        /*
-        //         ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-        //ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
-        //var students = from s in _context.Students
-        //               select s;
-        //switch (sortOrder)
-        //{
-        //    case "name_desc":
-        //        students = students.OrderByDescending(s => s.LastName);
-        //        break;
-        //    case "Date":
-        //        students = students.OrderBy(s => s.EnrollmentDate);
-        //        break;
-        //    case "date_desc":
-        //        students = students.OrderByDescending(s => s.EnrollmentDate);
-        //        break;
-        //    default:
-        //        students = students.OrderBy(s => s.LastName);
-        //        break;
-        //}
-        //return View(await students.AsNoTracking().ToListAsync());
-
-        //         */
-
-        //        return View();
-        //    }
     }
 }

@@ -41,6 +41,11 @@ namespace BookingApp.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return RedirectToAction("Index", "Library");
+                }
+
                 using var db = new BookingContext();
 
                 if (db.Users.Count(x => x.Email == email) > 0)
@@ -71,6 +76,11 @@ namespace BookingApp.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return RedirectToAction("Index", "Library");
+                }
+
                 using var db = new BookingContext();
 
                 var user = db.Users.FirstOrDefault(x => x.UserId == id);

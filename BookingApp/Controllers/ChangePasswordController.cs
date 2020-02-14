@@ -34,6 +34,11 @@ namespace BookingApp.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return RedirectToAction("Index", "ChangePassword");
+                }
+
                 if (newPassword != rPassword)
                 {
                     return RedirectToAction("Index", "ChangePassword", new { error = "wrongPasswords" });

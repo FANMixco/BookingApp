@@ -9,8 +9,13 @@ namespace BookingApp.Classes.DB
         public DbSet<Books> Books { get; set; }
         public DbSet<ReservedBook> ReservedBook { get; set; }
 
+#if UnitTest
         protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite("Data Source=booking.db");
+            => options.UseSqlite($"Data Source=booking.test.db");
+#else
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
+            => options.UseSqlite($"Data Source=booking.db");
+#endif
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

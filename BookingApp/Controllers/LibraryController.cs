@@ -81,6 +81,11 @@ namespace BookingApp.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return RedirectToAction("Index", "Library");
+                }
+
                 var user = _httpContextAccessor.HttpContext.Session.GetString("user");
                 using var db = new BookingContext();
 
@@ -111,6 +116,11 @@ namespace BookingApp.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return RedirectToAction("Index", "Library");
+                }
+
                 using var db = new BookingContext();
 
                 if (db.ReservedBook.Count(x => x.BookId == id) == 0)
@@ -132,6 +142,11 @@ namespace BookingApp.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return RedirectToAction("Index", "Library");
+                }
+
                 using var db = new BookingContext();
 
                 /*//Uncomment it to send emails

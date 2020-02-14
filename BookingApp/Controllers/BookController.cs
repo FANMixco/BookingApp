@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using BookingApp.Classes.DB;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,7 @@ namespace BookingApp.Controllers
     public class BookController : Controller
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private int? Role { get; set; }
+        private static int? Role { get; set; }
 
         public BookController(IHttpContextAccessor httpContextAccessor)
         {
@@ -33,11 +34,29 @@ namespace BookingApp.Controllers
         [HttpPost]
         public IActionResult Index(string book, string author, string year, string copies)
         {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Index", "Library");
+            }
+
+            switch (Insert(book, author, year, copies))
+            {
+                case true:
+                    return RedirectToAction("Index", "Book", new { msg = "added" });
+                case false:
+                    return RedirectToAction("Index", "Book", new { error = "wrongName" });
+                case null:
+                    return RedirectToAction("Update", "Home", new { error = "error" });
+            }
+        }
+
+        public bool? Insert(string book, string author, string year, string copies) 
+        {
             try
             {
                 using var db = new BookingContext();
 
-                if (db.Books.Count(x => x.Name == book) == 0)
+                if (db.Books.Count(x => x.Name == book) == 0 && !string.IsNullOrEmpty(book) && !string.IsNullOrEmpty(author) && !string.IsNullOrEmpty(copies))
                 {
                     int? yearVal = null;
 
@@ -46,20 +65,19 @@ namespace BookingApp.Controllers
                         yearVal = int.Parse(year);
                     }
 
-                    db.Add(new Books() { Name = book, Total = int.Parse(copies), Author= author, PublicationYear = yearVal });
+                    db.Add(new Books() { Name = book, Total = int.Parse(copies), Author = author, PublicationYear = yearVal });
                     db.SaveChanges();
-                    return RedirectToAction("Index", "Book", new { msg = "added" });
+                    return true;
                 }
                 else
                 {
-                    return RedirectToAction("Index", "Book", new { error = "wrongName" });
+                    return false;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return RedirectToAction("Update", "Home", new { error = "error" });
+                return null;
             }
-
         }
 
         [HttpPost]
@@ -67,6 +85,11 @@ namespace BookingApp.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return RedirectToAction("Index", "Library");
+                }
+
                 using var db = new BookingContext();
                 
                 var bookTotal = db.Books.Count(x => x.Name == book);
@@ -120,8 +143,6 @@ namespace BookingApp.Controllers
 
         public IActionResult Update(int id)
         {
-            Role = _httpContextAccessor.HttpContext.Session.GetInt32("role");
-
             if (Role == null)
             {
                 return RedirectToAction("Index", "Home", new { error = "noLogin" });
