@@ -66,7 +66,16 @@ namespace BookingApp.Controllers
 
                 var book = db.Books.FirstOrDefault(x => x.BookId == reservations.BookId);
 
-                booksAvailable.ReservedBooks.Add(new ReservedBooksModel() { Book = book.Name, Author = book.Author, ReservationId = reservations.ReservedBookId, User = user, Date = reservations.ReservedDate.ToString("yyyy-MM-dd hh:mm") });
+                booksAvailable.ReservedBooks.Add(new ReservedBooksModel() {
+                    Book = book.Name,
+                    Author = book.Author,
+                    ReservationId = reservations.ReservedBookId,
+                    User = user,
+                    Date = reservations.ReservedDate.ToString("yyyy-MM-dd hh:mm"),
+                    CollectedDate = reservations.CollectedDate?.ToString("yyyy-MM-dd hh:mm"),
+                    ReturnDate = reservations.ReturnDate?.ToString("yyyy-MM-dd hh:mm"),
+                    ReturnedDate = reservations.ReturnedDate?.ToString("yyyy-MM-dd hh:mm")
+                });
             }
 
             foreach (var users in db.Users)

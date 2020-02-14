@@ -134,33 +134,57 @@
                         <table class="tblResponsive">
                             <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>User</th>
                                     <th>Book</th>
                                     <th>Author</th>
                                     <th>Date</th>
+                                    <th>Collected</th>
+                                    <th>Return</th>
+                                    <th>Returned</th>
+                                    <th></th>
+                                    <th></th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var item in Model.ReservedBooks)
                                 {
-                                    <tr>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.User)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Book)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Author)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Date)
-                                        </td>
-                                        <td>
-                                            @Html.ActionLink("Cancel", "CancelReservation", "Library", new { id = item.ReservationId }, new { @onclick = "return confirm('Are you sure?')" })
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.ReservationId)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.User)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Book)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Author)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Date)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.CollectedDate)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.ReturnDate)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.ReturnedDate)
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Cancel", "CancelReservation", "Library", new { id = item.ReservationId }, new { @onclick = "return confirm('Are you sure?')" })
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Collect", "CollectBook", "Library")
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Return", "ReturnedBook", "Library")
+                                    </td>
+                                </tr>
                                 }
                             </tbody>
                         </table>

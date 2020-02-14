@@ -71,6 +71,11 @@ namespace BookingApp.Controllers
         [HttpPost]
         public IActionResult Index(string username, string password)
         {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             using var db = new BookingContext();
 
             var user = db.Users.FirstOrDefault(x => x.Username == username && x.Password == Encryption.Encrypt(password));

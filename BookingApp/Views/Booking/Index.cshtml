@@ -97,15 +97,17 @@
                 </dl>
             </div>
             <div class="tab-pane" id="reservations">
-                <h4>Reserved Books</h4>
+                <h4>My Reserved Books</h4>
                 <dl class="row">
                     <dd class="col-sm-10">
                         <table class="tblResponsive">
                             <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>Book</th>
                                     <th>Author</th>
                                     <th>Date</th>
+                                    <th>Return</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -114,6 +116,9 @@
                                 {
                                     <tr>
                                         <td>
+                                            @Html.DisplayFor(modelItem => item.ReservationId)
+                                        </td>
+                                        <td>
                                             @Html.DisplayFor(modelItem => item.Book)
                                         </td>
                                         <td>
@@ -121,6 +126,9 @@
                                         </td>
                                         <td>
                                             @Html.DisplayFor(modelItem => item.Date)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.ReturnDate)
                                         </td>
                                         <td>
                                             @Html.ActionLink("Cancel", "Cancel", "Booking", new { id = item.ReservationId }, new { @onclick = "return confirm('Are you sure?')" })

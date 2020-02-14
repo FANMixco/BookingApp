@@ -26,6 +26,9 @@ namespace BookingApp.Models
         public string Book { get; set; }
         public string Author { get; set; }
         public string Date { get; set; }
+        public string CollectedDate { get; set; }
+        public string ReturnDate { get; set; }
+        public string ReturnedDate { get; set; }
     }
 
     public class UsersModel

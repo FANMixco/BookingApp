@@ -27,5 +27,8 @@ namespace BookingApp.Classes.DB
         public int UserId { get; set; }
         public int BookId { get; set; }
         public DateTime ReservedDate { get; set; }
+        public DateTime? CollectedDate { get; set; }
+        public DateTime? ReturnDate { get; set; }
+        public DateTime? ReturnedDate { get; set; }
     }
 }
