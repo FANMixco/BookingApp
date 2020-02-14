@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using BookingApp.Classes;
 using BookingApp.Classes.DB;
@@ -75,9 +75,7 @@ namespace BookingApp.Controllers
 
                 var user = db.Users.FirstOrDefault(x => x.UserId == id);
 
-                var oldEmail = db.Users.FirstOrDefault(x => x.Username == username).Email;
-
-                if (oldEmail != email && db.Users.Count(x => x.Email == email) > 0)
+                if (user.Email != email && db.Users.Count(x => x.Email == email) > 0)
                 {
                     return RedirectToAction("Update", "User", new { error = "sameEmail" });
                 }
