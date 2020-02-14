@@ -1,4 +1,3 @@
-﻿using System;
 using System.Linq;
 using BookingApp.Classes.DB;
 using Microsoft.AspNetCore.Http;
@@ -74,7 +73,7 @@ namespace BookingApp.Controllers
                     return false;
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 return null;
             }
