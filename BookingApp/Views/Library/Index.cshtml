@@ -6,14 +6,6 @@
 
 <div class="container">
     <div class="row">
-        <div class="col">
-            @Html.ActionLink("Log Out", "LogOut", "Library")
-        </div>
-        <div class="col">
-            @Html.ActionLink("Change Password", "Index", "ChangePassword")
-        </div>
-    </div>
-    <div class="row">
         @{
             Microsoft.Extensions.Primitives.StringValues queryVal;
 
@@ -89,10 +81,18 @@
 
         <div class="tab-content clearfix">
             <div class="tab-pane active" id="booksTab">
-                <h4>Books Available</h4>
-                @Html.ActionLink("New", "Index", "Book")
+                <div class="row">
+                    <div class="col">
+                        <h4>Books Available</h4>
+                    </div>
+                    <div class="col col-right">
+                        <p class="pNew">
+                            @Html.ActionLink("New", "Index", "Book")
+                        </p>
+                    </div>
+                </div>
                 <dl class="row">
-                    <dd class="col-sm-10">
+                    <dd class="col-sm-12">
                         <table class="tblResponsive">
                             <thead>
                                 <tr>
@@ -140,7 +140,7 @@
             <div class="tab-pane" id="reservations">
                 <h4>Reserved Books</h4>
                 <dl class="row">
-                    <dd class="col-sm-10">
+                    <dd class="col-sm-12">
                         <table class="tblResponsive">
                             <thead>
                                 <tr>
@@ -160,41 +160,41 @@
                             <tbody>
                                 @foreach (var item in Model.ReservedBooks)
                                 {
-                                <tr>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.ReservationId)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.User)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Book)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Author)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Date)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.CollectedDate)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.ReturnDate)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.ReturnedDate)
-                                    </td>
-                                    <td>
-                                        @Html.ActionLink("Cancel", "CancelReservation", "Library", new { id = item.ReservationId }, new { @onclick = "return confirm('Are you sure?')" })
-                                    </td>
-                                    <td>
-                                        @Html.ActionLink("Collect", "CollectBook", "Library", new { id = item.ReservationId })
-                                    </td>
-                                    <td>
-                                        @Html.ActionLink("Return", "ReturnedBook", "Library", new { id = item.ReservationId })
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.ReservationId)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.User)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Book)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Author)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Date)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.CollectedDate)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.ReturnDate)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.ReturnedDate)
+                                        </td>
+                                        <td>
+                                            @Html.ActionLink("Cancel", "CancelReservation", "Library", new { id = item.ReservationId }, new { @onclick = "return confirm('Are you sure?')" })
+                                        </td>
+                                        <td>
+                                            @Html.ActionLink("Collect", "CollectBook", "Library", new { id = item.ReservationId })
+                                        </td>
+                                        <td>
+                                            @Html.ActionLink("Return", "ReturnedBook", "Library", new { id = item.ReservationId })
+                                        </td>
+                                    </tr>
                                 }
                             </tbody>
                         </table>
@@ -202,10 +202,18 @@
                 </dl>
             </div>
             <div class="tab-pane" id="users">
-                <h4>Users</h4>
-                @Html.ActionLink("New", "Index", "User")
+                <div class="row">
+                    <div class="col">
+                        <h4>Users</h4>
+                    </div>
+                    <div class="col col-right">
+                        <p class="pNew">
+                            @Html.ActionLink("New", "Index", "User")
+                        </p>
+                    </div>
+                </div>
                 <dl class="row">
-                    <dd class="col-sm-10">
+                    <dd class="col-sm-12">
                         <table class="tblResponsive">
                             <thead>
                                 <tr>
@@ -251,6 +259,21 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<style>
+    h4 {
+        padding-top: 15px;
+        padding-bottom: 10px;
+    }
+
+    .pNew {
+        padding-top: 12px;
+    }
+
+    .col-right {
+        text-align: right;
+    }
+</style>
 
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
 

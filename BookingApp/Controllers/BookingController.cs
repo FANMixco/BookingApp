@@ -46,7 +46,11 @@ namespace BookingApp.Controllers
                 {
                     if (db.ReservedBook.Count(x => x.BookId == id && x.UserId == UserID) < MAX_COPIES)
                     {
-                        db.Add(new ReservedBook() { BookId = id, UserId = UserID, ReservedDate = DateTime.Now });
+                        db.Add(new ReservedBook() {
+                            BookId = id,
+                            UserId = UserID,
+                            ReservedDate = DateTime.Now
+                        });
                         db.SaveChanges();
                         return RedirectToAction("Index", "Booking", new { msg = "reserved" });
                     }
@@ -112,7 +116,13 @@ namespace BookingApp.Controllers
 
                 var totalCurrentBook = db.ReservedBook.Count(x => x.BookId == book.BookId && x.ReturnedDate == null);
 
-                booksAvailable.AvailableBooks.Add(new AvailableBooksModel() { Book = book.Name, Available = total - totalCurrentBook, BookId = book.BookId, Author = book.Author, PublicationYear = book.PublicationYear });
+                booksAvailable.AvailableBooks.Add(new AvailableBooksModel() {
+                    Book = book.Name,
+                    Available = total - totalCurrentBook,
+                    BookId = book.BookId,
+                    Author = book.Author,
+                    PublicationYear = book.PublicationYear
+                });
             }
 
             UserID = db.Users.FirstOrDefault(x => x.Username == _httpContextAccessor.HttpContext.Session.GetString("user")).UserId;
