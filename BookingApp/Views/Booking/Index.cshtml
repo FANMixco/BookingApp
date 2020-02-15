@@ -108,6 +108,7 @@
                                     <th>Author</th>
                                     <th>Date</th>
                                     <th>Return</th>
+                                    <th>Returned</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -130,6 +131,14 @@
                                         <td>
                                             @Html.DisplayFor(modelItem => item.ReturnDate)
                                         </td>
+                                        @if (item.ReturnedDate != null)
+                                        {
+                                            <td>Yes</td>
+                                        }
+                                        else
+                                        {
+                                            <td>No</td>
+                                        }
                                         <td>
                                             @Html.ActionLink("Cancel", "Cancel", "Booking", new { id = item.ReservationId }, new { @onclick = "return confirm('Are you sure?')" })
                                         </td>

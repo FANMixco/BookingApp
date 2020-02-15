@@ -62,6 +62,16 @@
             {
                 <p class="text-success">The reservation was canceled.</p>
             }
+            else if (Context.Request.Query.TryGetValue("msg", out queryVal) &&
+              queryVal.FirstOrDefault() == "collected")
+            {
+                <p class="text-success">The book was collected.</p>
+            }
+            else if (Context.Request.Query.TryGetValue("msg", out queryVal) &&
+              queryVal.FirstOrDefault() == "returned")
+            {
+                <p class="text-success">The book was returned.</p>
+            }
         }
     </div>
     <div>
@@ -179,10 +189,10 @@
                                         @Html.ActionLink("Cancel", "CancelReservation", "Library", new { id = item.ReservationId }, new { @onclick = "return confirm('Are you sure?')" })
                                     </td>
                                     <td>
-                                        @Html.ActionLink("Collect", "CollectBook", "Library")
+                                        @Html.ActionLink("Collect", "CollectBook", "Library", new { id = item.ReservationId })
                                     </td>
                                     <td>
-                                        @Html.ActionLink("Return", "ReturnedBook", "Library")
+                                        @Html.ActionLink("Return", "ReturnedBook", "Library", new { id = item.ReservationId })
                                     </td>
                                 </tr>
                                 }
