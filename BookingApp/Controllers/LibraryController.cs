@@ -59,7 +59,14 @@ namespace BookingApp.Controllers
 
                 var totalCurrentBook = db.ReservedBook.Count(x => x.BookId == book.BookId && x.ReturnedDate == null);
 
-                booksAvailable.AvailableBooks.Add(new AvailableBooksModel() { Book = book.Name, Available = total - totalCurrentBook, BookId = book.BookId, Total = book.Total, Author = book.Author, PublicationYear = book.PublicationYear });
+                booksAvailable.AvailableBooks.Add(new AvailableBooksModel() {
+                    Book = book.Name,
+                    Available = total - totalCurrentBook,
+                    BookId = book.BookId,
+                    Total = book.Total,
+                    Author = book.Author,
+                    PublicationYear = book.PublicationYear
+                });
             }
 
             foreach (var reservations in db.ReservedBook)
@@ -82,7 +89,13 @@ namespace BookingApp.Controllers
 
             foreach (var users in db.Users)
             {
-                booksAvailable.Users.Add(new UsersModel { Username = users.Username, Role = users.Role == 0 ? "Admin" : "Reserver", UserId = users.UserId, Registered = users.Registered.ToString("yyyy-MM-dd"), Email = users.Email });
+                booksAvailable.Users.Add(new UsersModel {
+                    Username = users.Username,
+                    Role = users.Role == 0 ? "Admin" : "Reserver",
+                    UserId = users.UserId,
+                    Registered = users.Registered.ToString("yyyy-MM-dd"),
+                    Email = users.Email
+                });
             }
 
             return View(booksAvailable);

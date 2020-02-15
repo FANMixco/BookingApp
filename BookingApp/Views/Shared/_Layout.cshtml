@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -16,16 +18,27 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <!--<div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-        <ul class="navbar-nav flex-grow-1">
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-            </li>
-        </ul>
-    </div>-->
+
+                @if (!string.IsNullOrEmpty(Context.Session.GetString("role")))
+                {
+                    <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                        <ul class="nav navbar-nav ml-auto">
+                            <li class="nav-item">Welcome @Context.Session.GetString("user")!</li>
+                            <li class="nav-item">@Html.ActionLink("Change Password", "Index", "ChangePassword")</li>
+                            <li class="nav-item">
+                                @if (Context.Session.GetInt32("role") == 0)
+                                {
+                                    @Html.ActionLink("Log Out", "LogOut", "Library")
+
+                                }
+                                else
+                                {
+                                    @Html.ActionLink("Log Out", "LogOut", "Booking")
+                                }
+                            </li>
+                        </ul>
+                    </div>
+                }
             </div>
         </nav>
     </header>
@@ -36,10 +49,22 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
+        <div class="container text-center">
             &copy; 2020 - <a href="https://federiconavarrete.com">Federico Navarrete</a> and <a href="https://supernovaic.tk">Supernova IC</a>
         </div>
     </footer>
+
+    <style>
+        .text-center {
+            text-align: center;
+        }
+
+        .navbar-nav > li {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+    </style>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
