@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using BookingApp.Classes.DB;
 using Microsoft.AspNetCore.Http;
@@ -31,25 +32,26 @@ namespace BookingApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(string book, string author, string year, string copies)
+        public IActionResult Index(string book, string author, string year, string copies, IList<string> barcodes)
         {
+            //\b123456\d{8}\b
             if (!ModelState.IsValid)
             {
                 return RedirectToAction("Index", "Library");
             }
 
-            switch (Insert(book, author, year, copies))
+            switch (Insert(book, author, year, copies, barcodes))
             {
                 case true:
                     return RedirectToAction("Index", "Book", new { msg = "added" });
                 case false:
                     return RedirectToAction("Index", "Book", new { error = "wrongName" });
                 case null:
-                    return RedirectToAction("Update", "Home", new { error = "error" });
+                    return RedirectToAction("Index", "Library", new { error = "error" });
             }
         }
 
-        public bool? Insert(string book, string author, string year, string copies) 
+        public bool? Insert(string book, string author, string year, string copies, IList<string> barcodes)
         {
             try
             {
@@ -65,7 +67,18 @@ namespace BookingApp.Controllers
                     }
 
                     db.Add(new Books() { Name = book, Total = int.Parse(copies), Author = author, PublicationYear = yearVal });
+
                     db.SaveChanges();
+
+                    var lastID = db.Books.OrderByDescending(x => x.BookId).FirstOrDefault().BookId;
+
+                    foreach (var barcode in barcodes)
+                    {
+                        using var db2 = new BookingContext();
+                        db2.Add(new BooksCopies() { Barcode = barcode, BookId = lastID, Registered = System.DateTime.Now });
+                        db2.SaveChanges();
+                    }
+
                     return true;
                 }
                 else
@@ -90,7 +103,7 @@ namespace BookingApp.Controllers
                 }
 
                 using var db = new BookingContext();
-                
+
                 var bookTotal = db.Books.Count(x => x.Name == book);
                 var isRenamed = bookTotal == 0;
                 var isOldName = bookTotal == 1;
@@ -125,7 +138,10 @@ namespace BookingApp.Controllers
                     return RedirectToAction("Index", "Library", new { id, error = "wrongBook" });
                 }
             }
-            catch { return RedirectToAction("Update", "Home", new { id, error = "error" }); }
+            catch
+            {
+                return RedirectToAction("Update", "Home", new { id, error = "error" });
+            }
         }
 
         private static void UpdateBook(int id, string book, string author, int? year, string copies, BookingContext db)

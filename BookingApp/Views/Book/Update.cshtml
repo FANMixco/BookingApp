@@ -15,14 +15,19 @@
                 <p class="text-danger">The book already exist.</p>
             }
             else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+                queryVal.FirstOrDefault() == "lessBooks")
+            {
+                <p class="text-danger">You cannot have less books than the reserved ones.</p>
+            }
+            else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
                queryVal.FirstOrDefault() == "error")
             {
                 <p class="text-danger">Try again later.</p>
             }
             else if (Context.Request.Query.TryGetValue("msg", out queryVal) &&
-              queryVal.FirstOrDefault() == "added")
+              queryVal.FirstOrDefault() == "updated")
             {
-                <p class="text-success">The book was added.</p>
+                <p class="text-success">The book was updated.</p>
             }
         }
     </div>

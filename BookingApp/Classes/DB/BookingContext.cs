@@ -8,6 +8,7 @@ namespace BookingApp.Classes.DB
         public DbSet<Users> Users { get; set; }
         public DbSet<Books> Books { get; set; }
         public DbSet<ReservedBook> ReservedBook { get; set; }
+        public DbSet<BooksCopies> BooksCopies { get; set; }
 
 #if UnitTest
         protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -19,12 +20,20 @@ namespace BookingApp.Classes.DB
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            /*modelBuilder.Entity<Users>(entity =>
+            {
+                entity.HasKey(p => new { p.UserId });
+                entity.Property("UserId").ValueGeneratedOnAdd();
+            });*/
+
             modelBuilder.Entity<Users>()
               .HasKey(p => new { p.UserId });
             modelBuilder.Entity<Books>()
               .HasKey(p => new { p.BookId });
             modelBuilder.Entity<ReservedBook>()
               .HasKey(p => new { p.ReservedBookId });
+            modelBuilder.Entity<BooksCopies>()
+              .HasKey(p => new { p.BookCopiesId });
         }
 
         public async void DefaultData()

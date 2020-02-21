@@ -55,11 +55,12 @@ namespace BookingApp.Controllers
 
             foreach (var book in db.Books)
             {
-                var total = book.Total;
+                var total = db.BooksCopies.Count(x => x.BookId == book.BookId);
 
                 var totalCurrentBook = db.ReservedBook.Count(x => x.BookId == book.BookId && x.ReturnedDate == null);
 
-                booksAvailable.AvailableBooks.Add(new AvailableBooksModel() {
+                booksAvailable.AvailableBooks.Add(new AvailableBooksModel()
+                {
                     Book = book.Name,
                     Available = total - totalCurrentBook,
                     BookId = book.BookId,
@@ -75,7 +76,8 @@ namespace BookingApp.Controllers
 
                 var book = db.Books.FirstOrDefault(x => x.BookId == reservations.BookId);
 
-                booksAvailable.ReservedBooks.Add(new ReservedBooksModel() {
+                booksAvailable.ReservedBooks.Add(new ReservedBooksModel()
+                {
                     Book = book.Name,
                     Author = book.Author,
                     ReservationId = reservations.ReservedBookId,
@@ -89,7 +91,8 @@ namespace BookingApp.Controllers
 
             foreach (var users in db.Users)
             {
-                booksAvailable.Users.Add(new UsersModel {
+                booksAvailable.Users.Add(new UsersModel
+                {
                     Username = users.Username,
                     Role = users.Role == 0 ? "Admin" : "Reserver",
                     UserId = users.UserId,
@@ -162,7 +165,8 @@ namespace BookingApp.Controllers
             }
         }
 
-        public IActionResult CollectBook(int id)
+        [HttpPost]
+        public IActionResult CollectBook(int id, string tempBC)
         {
             try
             {

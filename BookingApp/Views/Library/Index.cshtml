@@ -139,6 +139,14 @@
             </div>
             <div class="tab-pane" id="reservations">
                 <h4>Reserved Books</h4>
+                <input type="hidden" id="tempBC" name="tempBC" />
+                <script>
+                    function getBarcode() {
+                        var barcodeID = prompt('Please enter the barcode', '');
+
+                        $("#tempBC").val(barcodeID);
+                    }
+                </script>
                 <dl class="row">
                     <dd class="col-sm-12">
                         <table class="tblResponsive">
@@ -189,7 +197,7 @@
                                             @Html.ActionLink("Cancel", "CancelReservation", "Library", new { id = item.ReservationId }, new { @onclick = "return confirm('Are you sure?')" })
                                         </td>
                                         <td>
-                                            @Html.ActionLink("Collect", "CollectBook", "Library", new { id = item.ReservationId })
+                                            @Html.ActionLink("Collect", "CollectBook", "Library", new { id = item.ReservationId }, new { @onclick = "return getBarcode()" })
                                         </td>
                                         <td>
                                             @Html.ActionLink("Return", "ReturnedBook", "Library", new { id = item.ReservationId })
