@@ -45,7 +45,7 @@ namespace BookingApp.Classes.DB
         public int UserId { get; set; }
         [Required]
         public int BookId { get; set; }
-        //public int BookCopiesId { get; set; }
+        public int? BooksCopiesId { get; set; }
         [Required]
         public DateTime ReservedDate { get; set; }
         public DateTime? CollectedDate { get; set; }
@@ -57,7 +57,7 @@ namespace BookingApp.Classes.DB
     {
         [Key]
         [Required]
-        public int BookCopiesId { get; set; }
+        public int BooksCopiesId { get; set; }
         [Required]
         public int BookId { get; set; }
         [Required]

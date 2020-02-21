@@ -6,11 +6,6 @@
 
 <div class="container">
     <div class="row">
-        <p>
-            @Html.ActionLink("Back", "Index", "Library")
-        </p>
-    </div>
-    <div class="row">
         @{
             Microsoft.Extensions.Primitives.StringValues queryVal;
 
@@ -31,7 +26,7 @@
             }
         }
     </div>
-    <div class="row">
+    <div>
         <form method="POST">
             <div class="form-group">
                 <label for="username">Username</label>
@@ -48,6 +43,7 @@
             <div class="form-group">
                 <select asp-for="SelectedRole" asp-items="Model.RolesModel" class="form-control"></select>
             </div>
+            @Html.ActionLink("Back", "Index", "Library", new { }, new { @class = "btn btn-info" })
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>

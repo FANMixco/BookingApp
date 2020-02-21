@@ -33,7 +33,7 @@ namespace BookingApp.Classes.DB
             modelBuilder.Entity<ReservedBook>()
               .HasKey(p => new { p.ReservedBookId });
             modelBuilder.Entity<BooksCopies>()
-              .HasKey(p => new { p.BookCopiesId });
+              .HasKey(p => new { p.BooksCopiesId });
         }
 
         public async void DefaultData()

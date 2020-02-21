@@ -131,7 +131,11 @@
                                             <td>No</td>
                                         }
                                         <td>
-                                            @Html.ActionLink("Cancel", "Cancel", "Booking", new { id = item.ReservationId }, new { @onclick = "return confirm('Are you sure?')" })
+                                            @if (item.ReturnedDate == null && item.ReturnDate == null)
+                                            {
+
+                                                @Html.ActionLink("Cancel", "Cancel", "Booking", new { id = item.ReservationId }, new { @onclick = "return confirm('Are you sure?')" })
+                                            }
                                         </td>
                                     </tr>
                                 }
@@ -147,7 +151,6 @@
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
 <style>
-
     h4 {
         padding-top: 15px;
         padding-bottom: 10px;
@@ -162,6 +165,8 @@
 
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
 
-<script>$('.tblResponsive').DataTable({
+<script>
+    $('.tblResponsive').DataTable({
         responsive: true
-    });</script>
+    });
+</script>

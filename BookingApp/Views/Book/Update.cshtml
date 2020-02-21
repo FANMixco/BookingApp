@@ -31,12 +31,7 @@
             }
         }
     </div>
-    <div class="row">
-        <p>
-            @Html.ActionLink("Back", "Index", "Library")
-        </p>
-    </div>
-    <div class="row">
+    <div>
         <form method="POST">
             <div class="form-group">
                 <label for="book">Book</label>
@@ -54,6 +49,10 @@
                 <label for="copies">Copies</label>
                 <input type="number" class="form-control" id="copies" name="copies" min="1" placeholder="Copies" value="@Model.Copies" required />
             </div>
+            <div id="barcodes">
+
+            </div>
+            @Html.ActionLink("Back", "Index", "Library", new { }, new { @class = "btn btn-info" })
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
