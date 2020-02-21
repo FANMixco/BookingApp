@@ -32,15 +32,14 @@ namespace BookingApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(string book, string author, string year, string copies, IList<string> barcodes)
+        public IActionResult Index(string book, string author, string year, IList<string> barcodes)
         {
-            //\b123456\d{8}\b
             if (!ModelState.IsValid)
             {
                 return RedirectToAction("Index", "Library");
             }
 
-            switch (Insert(book, author, year, copies, barcodes))
+            switch (Insert(book, author, year, barcodes))
             {
                 case true:
                     return RedirectToAction("Index", "Book", new { msg = "added" });
@@ -51,13 +50,13 @@ namespace BookingApp.Controllers
             }
         }
 
-        public bool? Insert(string book, string author, string year, string copies, IList<string> barcodes)
+        public bool? Insert(string book, string author, string year, IList<string> barcodes)
         {
             try
             {
                 using var db = new BookingContext();
 
-                if (db.Books.Count(x => x.Name == book) == 0 && !string.IsNullOrEmpty(book) && !string.IsNullOrEmpty(author) && !string.IsNullOrEmpty(copies))
+                if (db.Books.Count(x => x.Name == book) == 0 && !string.IsNullOrEmpty(book) && !string.IsNullOrEmpty(author))
                 {
                     int? yearVal = null;
 
@@ -66,7 +65,7 @@ namespace BookingApp.Controllers
                         yearVal = int.Parse(year);
                     }
 
-                    db.Add(new Books() { Name = book, Total = int.Parse(copies), Author = author, PublicationYear = yearVal });
+                    db.Add(new Books() { Name = book, Author = author, PublicationYear = yearVal });
 
                     db.SaveChanges();
 
@@ -93,7 +92,7 @@ namespace BookingApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Update(int id, string book, string author, string year, string copies)
+        public IActionResult Update(int id, string book, string author, string year, IList<string> barcodes)
         {
             try
             {
@@ -110,7 +109,7 @@ namespace BookingApp.Controllers
 
                 var totalReserved = db.ReservedBook.Count(x => x.BookId == id);
 
-                var copiesMakeLogic = (int.Parse(copies) - totalReserved) >= 0;
+                var copiesMakeLogic = (db.BooksCopies.Count(x => x.BookId == id) - totalReserved) >= 0;
 
                 //bookTotal == 0 is a new name
                 if ((isOldName || isRenamed) && copiesMakeLogic)
@@ -122,7 +121,7 @@ namespace BookingApp.Controllers
                         yearVal = int.Parse(year);
                     }
 
-                    UpdateBook(id, book, author, yearVal, copies, db);
+                    UpdateBook(id, book, author, yearVal, barcodes, db);
                     return RedirectToAction("Update", "Book", new { id, msg = "updated" });
                 }
                 else if (!copiesMakeLogic)
@@ -144,20 +143,26 @@ namespace BookingApp.Controllers
             }
         }
 
-        private static void UpdateBook(int id, string book, string author, int? year, string copies, BookingContext db)
+        private static void UpdateBook(int id, string book, string author, int? year, IList<string> barcodes, BookingContext db)
         {
             var bookData = db.Books.FirstOrDefault(x => x.BookId == id);
             bookData.Name = book;
             bookData.Author = author;
             bookData.PublicationYear = year;
-            bookData.Total = int.Parse(copies);
 
             db.Update(bookData);
             db.SaveChanges();
+
+            foreach (var barcode in barcodes)
+            {
+
+            }
         }
 
         public IActionResult Update(int id)
         {
+            Role = _httpContextAccessor.HttpContext.Session.GetInt32("role");
+
             if (Role == null)
             {
                 return RedirectToAction("Index", "Home", new { error = "noLogin" });
@@ -170,7 +175,9 @@ namespace BookingApp.Controllers
             var book = db.Books.FirstOrDefault(x => x.BookId == id);
             if (book != null)
             {
-                var model = new Models.BookUpdateModel() { ID = id, Book = book.Name, Copies = book.Total, Author = book.Author, Year = book.PublicationYear };
+                var barcodes = (from bookCopies in db.BooksCopies where bookCopies.BookId == id orderby bookCopies.BooksCopiesId select new { id = bookCopies.BooksCopiesId, barcode = bookCopies.Barcode }).ToDictionary(item => item.id, item => item.barcode);
+
+                var model = new Models.BookUpdateModel() { ID = id, Book = book.Name, Author = book.Author, Year = book.PublicationYear, Barcodes = barcodes, Total = barcodes.Count() };
                 return View(model);
             }
             else

@@ -40,7 +40,9 @@ namespace BookingApp.Controllers
 
                 using var db = new BookingContext();
 
-                var isBookAvailable = (db.Books.FirstOrDefault(x => x.BookId == id).Total - db.ReservedBook.Count(x => x.BookId == id && x.ReturnedDate == null)) >= 1;
+                var total = db.ReservedBook.Count(x => x.BookId == id && x.ReturnedDate == null);
+
+                var isBookAvailable = (total - db.ReservedBook.Count(x => x.BookId == id && x.ReturnedDate == null)) >= 1;
 
                 if (isBookAvailable)
                 {

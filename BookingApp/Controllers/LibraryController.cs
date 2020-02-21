@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Net;
-using System.Net.Mail;
 using BookingApp.Classes.DB;
 using BookingApp.Models;
 using Microsoft.AspNetCore.Http;
@@ -60,7 +58,7 @@ namespace BookingApp.Controllers
                     Book = book.Name,
                     Available = total - totalCurrentBook,
                     BookId = book.BookId,
-                    Total = book.Total,
+                    Total = total,
                     Author = book.Author,
                     PublicationYear = book.PublicationYear
                 });

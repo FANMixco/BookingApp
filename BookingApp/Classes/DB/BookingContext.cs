@@ -47,15 +47,15 @@ namespace BookingApp.Classes.DB
                     _ = db.Add(new Users() { Username = "admin", Role = 0, Email = "admin@noreply.com", Password = "admin", Registered = DateTime.Now });
                     _ = db.SaveChanges();
 
-                    _ = db.Add(new Books() { Name = "Harry Potter 1", Author = "J.K. Rowling", PublicationYear = 1997, Total = 5, Registered = DateTime.Now });
+                    _ = db.Add(new Books() { Name = "Harry Potter 1", Author = "J.K. Rowling", PublicationYear = 1997, Registered = DateTime.Now });
                     _ = db.SaveChanges();
-                    _ = db.Add(new Books() { Name = "Harry Potter 2", Author = "J.K. Rowling", PublicationYear = 1998, Total = 3, Registered = DateTime.Now });
+                    _ = db.Add(new Books() { Name = "Harry Potter 2", Author = "J.K. Rowling", PublicationYear = 1998, Registered = DateTime.Now });
                     _ = db.SaveChanges();
-                    _ = db.Add(new Books() { Name = "Harry Potter 3", Author = "J.K. Rowling", PublicationYear = 1999, Total = 1, Registered = DateTime.Now });
+                    _ = db.Add(new Books() { Name = "Harry Potter 3", Author = "J.K. Rowling", PublicationYear = 1999, Registered = DateTime.Now });
                     _ = db.SaveChanges();
-                    _ = db.Add(new Books() { Name = "Harry Potter 4", Author = "J.K. Rowling", PublicationYear = 2000, Total = 2, Registered = DateTime.Now });
+                    _ = db.Add(new Books() { Name = "Harry Potter 4", Author = "J.K. Rowling", PublicationYear = 2000, Registered = DateTime.Now });
                     _ = db.SaveChanges();
-                    _ = db.Add(new Books() { Name = "Harry Potter 5", Author = "J.K. Rowling", PublicationYear = 2003, Total = 4, Registered = DateTime.Now });
+                    _ = db.Add(new Books() { Name = "Harry Potter 5", Author = "J.K. Rowling", PublicationYear = 2003, Registered = DateTime.Now });
                     _ = db.SaveChanges();
                 }
             }

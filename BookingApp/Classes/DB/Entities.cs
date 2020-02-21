@@ -28,8 +28,6 @@ namespace BookingApp.Classes.DB
         [Required]
         public string Name { get; set; }
         [Required]
-        public int Total { get; set; }
-        [Required]
         public string Author { get; set; }
         public int? PublicationYear { get; set; }
         [Required]

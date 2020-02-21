@@ -38,29 +38,43 @@
                 <label for="year">Publication year</label>
                 <input type="number" class="form-control" id="year" name="year" placeholder="Year">
             </div>
-            <div class="form-group">
-                <label for="copies">Copies</label>
-                <input type="number" class="form-control" id="copies" name="copies" min="1" placeholder="Copies" required>
+            <div id="barcodes">
+                <label><b>Copies</b></label>
+                <button id="btnAdd" type="button" class="btn btn-success btn-circle">+</button>
+                <button id="btnMinus" type="button" class="btn btn-danger btn-circle">-</button>
+                <div class="form-group" id="div-0">
+                    <label for="[0]">Barcode #1</label><input type="text" class="form-control" minlength="8" name="[0]" id="[0]" aria-describedby="barcode" placeholder="Barcode" required>
+                </div>
             </div>
-            <div id="barcodes"></div>
             @Html.ActionLink("Back", "Index", "Library", new { }, new { @class = "btn btn-info" })
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
+    <style>
+        .btn-circle {
+            width: 30px;
+            height: 30px;
+            padding: 6px 0px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 12px;
+            line-height: 1.42857;
+        }
+    </style>
     <script>
         $(function () {
-            $('#copies').on('change keyup paste', function () {
-                const barcodeDiv = $("#barcodes");
+            let total = 1;
 
-                barcodeDiv.empty();
+            $("#btnAdd").click(function () {
+                $("#barcodes").append(`<div class="form-group" id="div-${total}">
+                <label for="[${total}]">Barcode #${total + 1}</label><input type="text" class="form-control" minlength="8" name="[${total}]" id="[${total}]" aria-describedby="barcode" placeholder="Barcode" required></div>`);
+                total++;
+            });
 
-                if ($(this).val() >= 1) {
-                    barcodeDiv.append(`<label for="copies"><b>Books barcodes</b></label>`);
-                }
-
-                for (let i = 0; i < $(this).val(); i++) {
-                    barcodeDiv.append(`<div class="form-group">
-                <label for="[${i}]">Barcode #${i+1}</label><input type="text" class="form-control" minlength="8" name="[${i}]" id="[${i}]" aria-describedby="barcode" placeholder="Barcode" required></div>`);
+            $("#btnMinus").click(function () {
+                if ((total - 1) > 0) {
+                    total--;
+                    $(`#div-${total}`).remove();
                 }
             });
         });
