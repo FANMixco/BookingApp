@@ -113,6 +113,7 @@
                                     <th>Total</th>
                                     <th></th>
                                     <th></th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -139,6 +140,9 @@
                                         </td>
                                         <td>
                                             @Html.ActionLink("Delete", "DeleteBook", "Library", new { id = item.BookId }, new { @onclick = "return confirm('Are you sure?')" })
+                                        </td>
+                                        <td>
+                                            <a href="javascript:alert('Barcodes:\n\n'+'@item.Copies');">Copies</a>
                                         </td>
                                     </tr>
                                 }

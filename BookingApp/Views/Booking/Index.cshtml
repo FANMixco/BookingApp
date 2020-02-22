@@ -78,7 +78,10 @@
                                             @Html.DisplayFor(modelItem => item.Available)
                                         </td>
                                         <td>
-                                            @Html.ActionLink("Reserve", "Reserve", "Booking", new { id = item.BookId })
+                                            @if (item.Available > 0)
+                                            {
+                                                @Html.ActionLink("Reserve", "Reserve", "Booking", new { id = item.BookId })
+                                            }
                                         </td>
                                     </tr>
                                 }
