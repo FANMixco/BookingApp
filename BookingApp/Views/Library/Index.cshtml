@@ -5,7 +5,7 @@
 @model BookingApp.Models.AvailableBooksViewModel
 
 <div class="container">
-    <div class="row">
+    <div id="divMsgs" class="row">
         @{
             Microsoft.Extensions.Primitives.StringValues queryVal;
 
@@ -33,6 +33,16 @@
                queryVal.FirstOrDefault() == "wrongBook")
             {
                 <p class="text-danger">You cannot edit unexisting books.</p>
+            }
+            else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+               queryVal.FirstOrDefault() == "wrongBarcode")
+            {
+                <p class="text-danger">Wrong barcode.</p>
+            }
+            else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+               queryVal.FirstOrDefault() == "reservedBook")
+            {
+                <p class="text-danger">This barcode is reserved.</p>
             }
             else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
                queryVal.FirstOrDefault() == "error")
@@ -147,6 +157,7 @@
                                     <th>#</th>
                                     <th>User</th>
                                     <th>Book</th>
+                                    <th>Barcode</th>
                                     <th>Author</th>
                                     <th>Date</th>
                                     <th>Collected</th>
@@ -171,6 +182,9 @@
                                             @Html.DisplayFor(modelItem => item.Book)
                                         </td>
                                         <td>
+                                            @Html.DisplayFor(modelItem => item.Barcode)
+                                        </td>
+                                        <td>
                                             @Html.DisplayFor(modelItem => item.Author)
                                         </td>
                                         <td>
@@ -186,13 +200,23 @@
                                             @Html.DisplayFor(modelItem => item.ReturnedDate)
                                         </td>
                                         <td>
-                                            @Html.ActionLink("Cancel", "CancelReservation", "Library", new { id = item.ReservationId }, new { @onclick = "return confirm('Are you sure?')" })
+                                            @if (item.ReturnedDate == null && item.ReturnDate == null)
+                                            {
+                                                @Html.ActionLink("Cancel", "CancelReservation", "Library", new { id = item.ReservationId }, new { @onclick = "return confirm('Are you sure?')" })
+                                            }
+                                            </td>
+                                        <td>
+                                            @if (item.ReturnedDate == null && item.ReturnDate == null)
+                                            {
+                                                <a href="#" id="collect-@item.ReservationId" class="collect">Collect</a>
+                                            }
                                         </td>
                                         <td>
-                                            @Html.ActionLink("Collect", "CollectBook", "Library", new { id = item.ReservationId })
-                                        </td>
-                                        <td>
-                                            @Html.ActionLink("Return", "ReturnedBook", "Library", new { id = item.ReservationId })
+                                            @if (item.ReturnedDate == null && item.ReturnDate != null)
+                                            {
+
+                                                @Html.ActionLink("Return", "ReturnedBook", "Library", new { id = item.ReservationId })
+                                            }
                                         </td>
                                     </tr>
                                 }
@@ -261,6 +285,7 @@
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
 <style>
+
     h4 {
         padding-top: 15px;
         padding-bottom: 10px;
@@ -280,7 +305,26 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
 
 <script>
-    $('.tblResponsive').DataTable({
-        responsive: true
+    $(function () {
+        $('.tblResponsive').DataTable({
+            responsive: true
+        });
+
+        $(".collect").click(function (e) {
+            e.preventDefault();
+            let id = $(this).attr('id').split("-")[1];
+
+            var barcodeID = prompt('Please enter the barcode', '');
+
+            $("#divMsgs").empty();
+            if (barcodeID === undefined || barcodeID === null || barcodeID === "") {
+                $("#divMsgs").append(`<p class="text-danger">The barcode cannot be empty.</p>`);
+            } else if (barcodeID.length < 8) {
+                $("#divMsgs").append(`<p class="text-danger">Wrong barcode size.</p>`);
+            }
+            else {
+                location.replace(`${window.location.origin}/Library/CollectBook/${id}?barcode=${barcodeID}`);
+            }
+        });
     });
 </script>

@@ -8,6 +8,7 @@
     <title>@ViewData["Title"] - BookingApp</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
 </head>
 <body>
     <header>
@@ -25,6 +26,10 @@
                         <ul class="nav navbar-nav ml-auto">
                             <li class="nav-item">Welcome @Context.Session.GetString("user")!</li>
                             <li class="nav-item">@Html.ActionLink("Change Password", "Index", "ChangePassword")</li>
+                            @if (Context.Session.GetInt32("role") == 0)
+                            {
+                                <li class="nav-item">@Html.ActionLink("Settings", "Index", "Settings")</li>
+                            }
                             <li class="nav-item">
                                 @if (Context.Session.GetInt32("role") == 0)
                                 {
@@ -65,7 +70,6 @@
         }
     </style>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)

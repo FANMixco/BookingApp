@@ -1,5 +1,4 @@
-﻿using System;
-namespace BookingApp.Classes
+﻿namespace BookingApp.DB.Classes
 {
     public class DBInfoSettings
     {

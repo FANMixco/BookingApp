@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using BookingApp.Classes.DB;
+using BookingApp.DB.Classes.DB;
 using BookingApp.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -40,13 +40,16 @@ namespace BookingApp.Controllers
 
                 using var db = new BookingContext();
 
-                var isBookAvailable = (db.Books.FirstOrDefault(x => x.BookId == id).Total - db.ReservedBook.Count(x => x.BookId == id && x.ReturnedDate == null)) >= 1;
+                var total = db.ReservedBook.Count(x => x.BookId == id && x.ReturnedDate == null);
+
+                var isBookAvailable = (total - db.ReservedBook.Count(x => x.BookId == id && x.ReturnedDate == null)) >= 1;
 
                 if (isBookAvailable)
                 {
                     if (db.ReservedBook.Count(x => x.BookId == id && x.UserId == UserID) < MAX_COPIES)
                     {
-                        db.Add(new ReservedBook() {
+                        db.Add(new ReservedBook()
+                        {
                             BookId = id,
                             UserId = UserID,
                             ReservedDate = DateTime.Now
@@ -112,11 +115,12 @@ namespace BookingApp.Controllers
 
             foreach (var book in db.Books)
             {
-                var total = book.Total;
+                var total = db.BooksCopies.Count(x => x.BookId == book.BookId);
 
                 var totalCurrentBook = db.ReservedBook.Count(x => x.BookId == book.BookId && x.ReturnedDate == null);
 
-                booksAvailable.AvailableBooks.Add(new AvailableBooksModel() {
+                booksAvailable.AvailableBooks.Add(new AvailableBooksModel()
+                {
                     Book = book.Name,
                     Available = total - totalCurrentBook,
                     BookId = book.BookId,
@@ -133,11 +137,13 @@ namespace BookingApp.Controllers
 
                 var book = db.Books.FirstOrDefault(x => x.BookId == reservations.BookId);
 
-                booksAvailable.ReservedBooks.Add(new ReservedBooksModel() {
+                booksAvailable.ReservedBooks.Add(new ReservedBooksModel()
+                {
                     Book = book.Name,
                     Author = book.Author,
                     ReservationId = reservations.ReservedBookId,
-                    User = user, Date = reservations.ReservedDate.ToString("yyyy-MM-dd hh:mm"),
+                    User = user,
+                    Date = reservations.ReservedDate.ToString("yyyy-MM-dd hh:mm"),
                     CollectedDate = reservations.CollectedDate?.ToString("yyyy-MM-dd hh:mm"),
                     ReturnDate = reservations.ReturnDate?.ToString("yyyy-MM-dd hh:mm"),
                     ReturnedDate = reservations.ReturnedDate?.ToString("yyyy-MM-dd hh:mm")

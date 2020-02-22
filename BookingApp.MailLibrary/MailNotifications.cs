@@ -1,0 +1,49 @@
+﻿using System.Linq;
+using System.Net;
+using System.Net.Mail;
+using BookingApp.DB.Classes.DB;
+
+namespace BookingApp.MailLibrary
+{
+    public static class MailNotifications
+    {
+        private const string PASS_KEY = "!emJ(?w)Sx_5S-3L";
+
+        public static void SendEmail(string email, string subject, string body)
+        {
+            try
+            {
+                using var db = new BookingContext();
+
+                var settings = db.Settings.FirstOrDefault();
+
+                // Credentials
+                var credentials = new NetworkCredential(settings.Email, DB.EncryptionMails.DecryptString(PASS_KEY, settings.PasswordHost));
+                // Mail message
+                var mail = new MailMessage()
+                {
+                    From = new MailAddress(settings.Email),
+                    Subject = subject,
+                    Body = body
+                };
+                mail.IsBodyHtml = true;
+                mail.To.Add(new MailAddress(email));
+                // Smtp client
+                var client = new SmtpClient()
+                {
+                    Port = settings.Port,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    UseDefaultCredentials = false,
+                    Host = settings.MailHost,
+                    EnableSsl = true,
+                    Credentials = credentials
+                };
+                client.Send(mail);
+            }
+            catch
+            {
+
+            }
+        }
+    }
+}

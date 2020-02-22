@@ -1,5 +1,5 @@
-﻿using BookingApp.Classes;
-using BookingApp.Classes.DB;
+﻿using BookingApp.DB.Classes;
+using BookingApp.DB.Classes.DB;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
@@ -55,6 +55,8 @@ namespace BookingApp.Controllers
                     user.Password = Encryption.Encrypt(newPassword);
                     db.Update(user);
                     db.SaveChanges();
+
+                    //MailLibrary.MailNotifications.SendEmail(user.Email, "Your password was updated.", "Password updated");
                     return RedirectToAction("Index", "ChangePassword", new { msg = "updated" });
                 }
                 else

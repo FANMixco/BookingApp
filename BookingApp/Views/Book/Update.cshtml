@@ -15,23 +15,23 @@
                 <p class="text-danger">The book already exist.</p>
             }
             else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+                queryVal.FirstOrDefault() == "lessBooks")
+            {
+                <p class="text-danger">You cannot have less books than the reserved ones.</p>
+            }
+            else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
                queryVal.FirstOrDefault() == "error")
             {
                 <p class="text-danger">Try again later.</p>
             }
             else if (Context.Request.Query.TryGetValue("msg", out queryVal) &&
-              queryVal.FirstOrDefault() == "added")
+              queryVal.FirstOrDefault() == "updated")
             {
-                <p class="text-success">The book was added.</p>
+                <p class="text-success">The book was updated.</p>
             }
         }
     </div>
-    <div class="row">
-        <p>
-            @Html.ActionLink("Back", "Index", "Library")
-        </p>
-    </div>
-    <div class="row">
+    <div>
         <form method="POST">
             <div class="form-group">
                 <label for="book">Book</label>
@@ -45,11 +45,53 @@
                 <label for="year">Publication year</label>
                 <input type="number" class="form-control" id="year" name="year" placeholder="Year" value="@Model.Year" />
             </div>
-            <div class="form-group">
-                <label for="copies">Copies</label>
-                <input type="number" class="form-control" id="copies" name="copies" min="1" placeholder="Copies" value="@Model.Copies" required />
+            <div id="barcodes">
+                <label><b>Copies</b></label>
+                <button id="btnAdd" type="button" class="btn btn-success btn-circle">+</button>
+                <button id="btnMinus" type="button" class="btn btn-danger btn-circle">-</button>
+                @{
+                    var i = 1;
+                    foreach (var barcode in Model.Barcodes)
+                    {
+                        <div class="form-group" id="div-@barcode.Key">
+                            <label for="[0]">Barcode #@i</label><input type="text" class="form-control" minlength="8" name="[@barcode.Key]" id="[@barcode.Key]" aria-describedby="barcode" placeholder="Barcode" value="@barcode.Value" required>
+                        </div>
+                        i++;
+                    }
+                }
             </div>
+            @Html.HiddenFor(m => m.Total, new { @id = "total" })
+            @Html.ActionLink("Back", "Index", "Library", new { }, new { @class = "btn btn-info" })
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
+    <style>
+        .btn-circle {
+            width: 30px;
+            height: 30px;
+            padding: 6px 0px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 12px;
+            line-height: 1.42857;
+        }
+    </style>
+    <script>
+        $(function () {
+            let total = parseInt($("#total").val());
+
+            $("#btnAdd").click(function () {
+                $("#barcodes").append(`<div class="form-group" id="div-${total}">
+                <label for="[${total}]">Barcode #${total + 1}</label><input type="text" class="form-control" minlength="8" name="[${total}]" id="[${total}]" aria-describedby="barcode" placeholder="Barcode" required></div>`);
+                total++;
+            });
+
+            $("#btnMinus").click(function () {
+                if ((total - 1) > 0) {
+                    total--;
+                    $(`#div-${total}`).remove();
+                }
+            });
+        });
+    </script>
 </div>

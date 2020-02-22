@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
-using System.Net;
-using System.Net.Mail;
-using BookingApp.Classes.DB;
+using BookingApp.DB.Classes.DB;
 using BookingApp.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,13 +9,9 @@ namespace BookingApp.Controllers
 {
     public class LibraryController : Controller
     {
-        const string HOST = "smtp.host.com";
-        const string PERSONAL_EMAIL = "your-email@host.com";
-        const string PASSWORD = "your-password";
-        const string SUBJECT = "Reservation canceled";
-        const string BODY = "Your reservation of {0} has been canceled.";
-        const int PORT = 0;
         const int RETURN_DAYS = 2;
+        //const string SUBJECT_CANCEL = "Reservation canceled";
+        //const string BODY_CANCEL = "Your reservation of {0} has been canceled.";
 
         private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -55,15 +49,16 @@ namespace BookingApp.Controllers
 
             foreach (var book in db.Books)
             {
-                var total = book.Total;
+                var total = db.BooksCopies.Count(x => x.BookId == book.BookId);
 
                 var totalCurrentBook = db.ReservedBook.Count(x => x.BookId == book.BookId && x.ReturnedDate == null);
 
-                booksAvailable.AvailableBooks.Add(new AvailableBooksModel() {
+                booksAvailable.AvailableBooks.Add(new AvailableBooksModel()
+                {
                     Book = book.Name,
                     Available = total - totalCurrentBook,
                     BookId = book.BookId,
-                    Total = book.Total,
+                    Total = total,
                     Author = book.Author,
                     PublicationYear = book.PublicationYear
                 });
@@ -75,7 +70,15 @@ namespace BookingApp.Controllers
 
                 var book = db.Books.FirstOrDefault(x => x.BookId == reservations.BookId);
 
-                booksAvailable.ReservedBooks.Add(new ReservedBooksModel() {
+                string barcode = "";
+
+                if (reservations.BooksCopiesId != null)
+                {
+                    barcode = db.BooksCopies.FirstOrDefault(x => x.BooksCopiesId == reservations.BooksCopiesId).Barcode;
+                }
+
+                booksAvailable.ReservedBooks.Add(new ReservedBooksModel()
+                {
                     Book = book.Name,
                     Author = book.Author,
                     ReservationId = reservations.ReservedBookId,
@@ -83,13 +86,15 @@ namespace BookingApp.Controllers
                     Date = reservations.ReservedDate.ToString("yyyy-MM-dd hh:mm"),
                     CollectedDate = reservations.CollectedDate?.ToString("yyyy-MM-dd hh:mm"),
                     ReturnDate = reservations.ReturnDate?.ToString("yyyy-MM-dd hh:mm"),
-                    ReturnedDate = reservations.ReturnedDate?.ToString("yyyy-MM-dd hh:mm")
+                    ReturnedDate = reservations.ReturnedDate?.ToString("yyyy-MM-dd hh:mm"),
+                    Barcode = barcode
                 });
             }
 
             foreach (var users in db.Users)
             {
-                booksAvailable.Users.Add(new UsersModel {
+                booksAvailable.Users.Add(new UsersModel
+                {
                     Username = users.Username,
                     Role = users.Role == 0 ? "Admin" : "Reserver",
                     UserId = users.UserId,
@@ -162,7 +167,7 @@ namespace BookingApp.Controllers
             }
         }
 
-        public IActionResult CollectBook(int id)
+        public IActionResult CollectBook(int id, string barcode)
         {
             try
             {
@@ -173,7 +178,21 @@ namespace BookingApp.Controllers
 
                 using var db = new BookingContext();
 
+                var currentBC = db.BooksCopies.FirstOrDefault(x => x.BookId == id && x.Barcode == barcode && x.CanBeReserved == 1);
+
+                if (currentBC == null)
+                {
+                    return RedirectToAction("Index", "Library", new { error = "wrongBarcode" });
+                }
+
+                if (db.ReservedBook.Count(x => x.BooksCopiesId == currentBC.BooksCopiesId && x.ReturnedDate == null) > 0)
+                {
+                    return RedirectToAction("Index", "Library", new { error = "reservedBook" });
+                }
+
                 var reservedBook = db.ReservedBook.FirstOrDefault(x => x.ReservedBookId == id);
+
+                reservedBook.BooksCopiesId = currentBC.BooksCopiesId;
 
                 reservedBook.CollectedDate = DateTime.Now;
 
@@ -229,11 +248,11 @@ namespace BookingApp.Controllers
 
                 using var db = new BookingContext();
 
-                /*//Uncomment it to send emails
-                var reservedBook = db.ReservedBook.FirstOrDefault(x => x.ReservedBookId == id);
-                var email = db.Users.FirstOrDefault(x => x.UserId == reservedBook.UserId).Email;
-                var book = db.Books.FirstOrDefault(x => x.BookId == reservedBook.BookId).Name;
-                SendCancelationEmail(email, book);*/
+                //Uncomment it to send emails
+                //var reservedBook = db.ReservedBook.FirstOrDefault(x => x.ReservedBookId == id);
+                //var email = db.Users.FirstOrDefault(x => x.UserId == reservedBook.UserId).Email;
+                //var book = db.Books.FirstOrDefault(x => x.BookId == reservedBook.BookId).Name;
+                //MailLibrary.MailNotifications.SendEmail(email, SUBJECT_CANCEL, string.Format(BODY_CANCEL, book));
 
                 db.Remove(new ReservedBook() { ReservedBookId = id });
                 db.SaveChanges();
@@ -243,39 +262,6 @@ namespace BookingApp.Controllers
             catch
             {
                 return RedirectToAction("Index", "Library", new { error = "error" });
-            }
-        }
-
-        private void SendCancelationEmail(string email, string book)
-        {
-            try
-            {
-                // Credentials
-                var credentials = new NetworkCredential(PERSONAL_EMAIL, PASSWORD);
-                // Mail message
-                var mail = new MailMessage()
-                {
-                    From = new MailAddress(PERSONAL_EMAIL),
-                    Subject = SUBJECT,
-                    Body = string.Format(BODY, book)
-                };
-                mail.IsBodyHtml = true;
-                mail.To.Add(new MailAddress(email));
-                // Smtp client
-                var client = new SmtpClient()
-                {
-                    Port = PORT,
-                    DeliveryMethod = SmtpDeliveryMethod.Network,
-                    UseDefaultCredentials = false,
-                    Host = HOST,
-                    EnableSsl = true,
-                    Credentials = credentials
-                };
-                client.Send(mail);
-            }
-            catch
-            {
-
             }
         }
     }
