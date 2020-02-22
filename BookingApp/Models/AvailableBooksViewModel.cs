@@ -17,6 +17,7 @@ namespace BookingApp.Models
         public int? PublicationYear { get; set; }
         public int Available { get; set; }
         public int Total { get; set; }
+        public string Copies { get; set; }
     }
 
     public class ReservedBooksModel

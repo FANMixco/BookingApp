@@ -60,7 +60,8 @@ namespace BookingApp.Controllers
                     BookId = book.BookId,
                     Total = total,
                     Author = book.Author,
-                    PublicationYear = book.PublicationYear
+                    PublicationYear = book.PublicationYear,
+                    Copies = string.Join(@"\n", db.BooksCopies.Where(x=>x.BookId == book.BookId).Select(x=>x.Barcode).ToList())
                 });
             }
 
