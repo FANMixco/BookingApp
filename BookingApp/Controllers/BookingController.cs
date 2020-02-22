@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using BookingApp.Classes.DB;
+using BookingApp.DB.Classes.DB;
 using BookingApp.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace BookingApp.Classes.DB
+namespace BookingApp.DB.Classes.DB
 {
     public class Users
     {
@@ -61,6 +61,26 @@ namespace BookingApp.Classes.DB
         [Required]
         public string Barcode { get; set; }
         [Required]
+        public int CanBeReserved { get; set; }
+        public string Notes { get; set; }
+        [Required]
         public DateTime Registered { get; set; }
+    }
+
+    public class Settings
+    {
+        [Key]
+        [Required]
+        public int SettingsId { get; set; }
+        [Required]
+        public int MaxTime { get; set; }
+        [Required]
+        public string Email { get; set; }
+        [Required]
+        public string MailHost { get; set; }
+        [Required]
+        public string PasswordHost { get; set; }
+        [Required]
+        public int Port { get; set; }
     }
 }

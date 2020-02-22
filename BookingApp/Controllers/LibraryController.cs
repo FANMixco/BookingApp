@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using BookingApp.Classes.DB;
+using BookingApp.DB.Classes.DB;
 using BookingApp.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,8 +10,8 @@ namespace BookingApp.Controllers
     public class LibraryController : Controller
     {
         const int RETURN_DAYS = 2;
-        const string SUBJECT_CANCEL = "Reservation canceled";
-        const string BODY_CANCEL = "Your reservation of {0} has been canceled.";
+        //const string SUBJECT_CANCEL = "Reservation canceled";
+        //const string BODY_CANCEL = "Your reservation of {0} has been canceled.";
 
         private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -178,7 +178,7 @@ namespace BookingApp.Controllers
 
                 using var db = new BookingContext();
 
-                var currentBC = db.BooksCopies.FirstOrDefault(x => x.BookId == id && x.Barcode == barcode);
+                var currentBC = db.BooksCopies.FirstOrDefault(x => x.BookId == id && x.Barcode == barcode && x.CanBeReserved == 1);
 
                 if (currentBC == null)
                 {

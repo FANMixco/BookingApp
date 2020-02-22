@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookingApp.Classes.DB
+namespace BookingApp.DB.Classes.DB
 {
     public class BookingContext : DbContext
     {
@@ -9,6 +9,7 @@ namespace BookingApp.Classes.DB
         public DbSet<Books> Books { get; set; }
         public DbSet<ReservedBook> ReservedBook { get; set; }
         public DbSet<BooksCopies> BooksCopies { get; set; }
+        public DbSet<Settings> Settings { get; set; }
 
 #if UnitTest
         protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -34,6 +35,8 @@ namespace BookingApp.Classes.DB
               .HasKey(p => new { p.ReservedBookId });
             modelBuilder.Entity<BooksCopies>()
               .HasKey(p => new { p.BooksCopiesId });
+            modelBuilder.Entity<Settings>()
+              .HasKey(p => new { p.SettingsId });
         }
 
         public async void DefaultData()

@@ -7,8 +7,8 @@
 
 
   <ItemGroup>
-    <Folder Include="Classes\" />
     <Folder Include="Views\Library\" />
+    <Folder Include="Views\Settings\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.2" />
@@ -24,6 +24,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BookingApp.MailLibrary\BookingApp.MailLibrary.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+    <ProjectReference Include="..\BookingApp.DB\BookingApp.DB.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
   </ItemGroup>

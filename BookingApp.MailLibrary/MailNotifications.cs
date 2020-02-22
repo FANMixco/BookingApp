@@ -1,25 +1,28 @@
-﻿using System.Net;
+﻿using System.Linq;
+using System.Net;
 using System.Net.Mail;
+using BookingApp.DB.Classes.DB;
 
 namespace BookingApp.MailLibrary
 {
     public static class MailNotifications
     {
-        const string HOST = "smtp.host.com";
-        const string PERSONAL_EMAIL = "your-email@host.com";
-        const string PASSWORD = "your-password";
-        const int PORT = 0;
+        private const string PASS_KEY = "!emJ(?w)Sx_5S-3L";
 
         public static void SendEmail(string email, string subject, string body)
         {
             try
             {
+                using var db = new BookingContext();
+
+                var settings = db.Settings.FirstOrDefault();
+
                 // Credentials
-                var credentials = new NetworkCredential(PERSONAL_EMAIL, PASSWORD);
+                var credentials = new NetworkCredential(settings.Email, DB.EncryptionMails.DecryptString(PASS_KEY, settings.PasswordHost));
                 // Mail message
                 var mail = new MailMessage()
                 {
-                    From = new MailAddress(PERSONAL_EMAIL),
+                    From = new MailAddress(settings.Email),
                     Subject = subject,
                     Body = body
                 };
@@ -28,10 +31,10 @@ namespace BookingApp.MailLibrary
                 // Smtp client
                 var client = new SmtpClient()
                 {
-                    Port = PORT,
+                    Port = settings.Port,
                     DeliveryMethod = SmtpDeliveryMethod.Network,
                     UseDefaultCredentials = false,
-                    Host = HOST,
+                    Host = settings.MailHost,
                     EnableSsl = true,
                     Credentials = credentials
                 };

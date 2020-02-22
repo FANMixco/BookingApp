@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using BookingApp.Classes.DB;
+using BookingApp.DB.Classes.DB;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -70,13 +70,7 @@ namespace BookingApp.Controllers
                     db.SaveChanges();
 
                     var lastID = db.Books.OrderByDescending(x => x.BookId).FirstOrDefault().BookId;
-
-                    foreach (var barcode in barcodes)
-                    {
-                        using var db2 = new BookingContext();
-                        db2.Add(new BooksCopies() { Barcode = barcode, BookId = lastID, Registered = System.DateTime.Now });
-                        db2.SaveChanges();
-                    }
+                    InsertBarcode(barcodes, lastID);
 
                     return true;
                 }
@@ -88,6 +82,16 @@ namespace BookingApp.Controllers
             catch
             {
                 return null;
+            }
+        }
+
+        private static void InsertBarcode(IList<string> barcodes, int bookId)
+        {
+            foreach (var barcode in barcodes)
+            {
+                using var db2 = new BookingContext();
+                db2.Add(new BooksCopies() { Barcode = barcode, BookId = bookId, Registered = System.DateTime.Now });
+                db2.SaveChanges();
             }
         }
 
@@ -153,10 +157,25 @@ namespace BookingApp.Controllers
             db.Update(bookData);
             db.SaveChanges();
 
-            foreach (var barcode in barcodes)
-            {
+            var currentBarcodes = db.BooksCopies.Where(x => x.BookId == id).Select(x => x.Barcode).ToList();
 
+            var newBarcodes = barcodes.Except(currentBarcodes).ToList();
+
+            InsertBarcode(newBarcodes, id);
+
+            var removedBarcodes = currentBarcodes.Except(barcodes).ToList();
+
+            foreach (var barcode in removedBarcodes)
+            {
+                var booksCopiesId = db.BooksCopies.FirstOrDefault(x => x.Barcode == barcode).BooksCopiesId;
+                if (db.ReservedBook.Count(x => x.BooksCopiesId == booksCopiesId) == 0)
+                {
+                    using var db2 = new BookingContext();
+                    db2.Remove(new BooksCopies { BooksCopiesId = booksCopiesId });
+                    db2.SaveChanges();
+                }
             }
+            //Can be rented could be a solution to the point of a robbed book
         }
 
         public IActionResult Update(int id)

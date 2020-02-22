@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace BookingApp.Classes
+namespace BookingApp.DB.Classes
 {
     public static class Encryption
     {

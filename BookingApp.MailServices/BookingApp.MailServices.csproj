@@ -5,4 +5,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BookingApp.DB\BookingApp.DB.csproj" />
+    <ProjectReference Include="..\BookingApp.MailLibrary\BookingApp.MailLibrary.csproj" />
+  </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
-using BookingApp.Classes;
-using BookingApp.Classes.DB;
+using BookingApp.DB.Classes;
+using BookingApp.DB.Classes.DB;
 using BookingApp.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -90,15 +90,22 @@ namespace BookingApp.Controllers
                     return RedirectToAction("Update", "User", new { error = "sameEmail" });
                 }
 
+                //var passUpdated = false;
                 if (!string.IsNullOrEmpty(password))
                 {
                     user.Password = Encryption.Encrypt(password);
+                    //passUpdated = true;
                 }
                 user.Username = username;
                 user.Email = email;
                 user.Role = int.Parse(SelectedRole);
                 db.Update(user);
                 db.SaveChanges();
+
+                /*if (passUpdated)
+                {
+                    MailLibrary.MailNotifications.SendEmail(user.Email, $"Your password was updated. New password is: ${password}. If it was not requested, please contact the administration by phone.", "Password updated");
+                }*/
 
                 return RedirectToAction("Update", "User", new { msg = "updated" });
             }
