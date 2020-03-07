@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Linq;
 using BookingApp.DB.Classes.DB;
+using BookingApp.Filters.Authorization;
 using BookingApp.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingApp.Controllers
 {
+    //[Authorize(Roles.ADMIN)]
     public class LibraryController : Controller
     {
         const int RETURN_DAYS = 2;
@@ -97,7 +99,7 @@ namespace BookingApp.Controllers
                 booksAvailable.Users.Add(new UsersModel
                 {
                     Username = users.Username,
-                    Role = users.Role == 0 ? "Admin" : "Reserver",
+                    Role = users.Role == 0 ? "Admin" : "Customer",
                     UserId = users.UserId,
                     Registered = users.Registered.ToString("yyyy-MM-dd"),
                     Email = users.Email
