@@ -1,5 +1,4 @@
-﻿using System;
-using System.Security.Claims;
+﻿//using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -25,7 +24,7 @@ namespace BookingApp.Filters.Authorization
         public void OnAuthorization(AuthorizationFilterContext context)
         {
             var IsAuthenticated = context.HttpContext.User.Identity.IsAuthenticated;
-            var claimsIndentity = context.HttpContext.User.Identity as ClaimsIdentity;
+            //var claimsIndentity = context.HttpContext.User.Identity as ClaimsIdentity;
 
             if (IsAuthenticated)
             {
