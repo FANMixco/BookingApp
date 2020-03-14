@@ -5,6 +5,7 @@
 @model BookingApp.Models.UserUpdateModel
 
 <div class="container">
+    <h4>Update user</h4>
     <div class="row">
         @{
             Microsoft.Extensions.Primitives.StringValues queryVal;
@@ -45,8 +46,16 @@
             <div class="form-group">
                 <select asp-for="SelectedRole" asp-items="Model.RolesModel" class="form-control"></select>
             </div>
-            @Html.ActionLink("Back", "Index", "Library", new { }, new { @class = "btn btn-info" })
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <div class="actions">
+                @Html.ActionLink("Back", "Index", "Library", new { }, new { @class = "btn btn-info" })
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
         }
     </div>
 </div>
+
+<style>
+    .actions {
+        text-align: right;
+    }
+</style>
