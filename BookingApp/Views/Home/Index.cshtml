@@ -3,35 +3,72 @@
 }
 
 <div class="container">
-    <div class="row">
-        @{
-            Microsoft.Extensions.Primitives.StringValues queryVal;
+    <div class="div-center">
+        <div class="content">
+            <div class="row">
+                @{
+                    Microsoft.Extensions.Primitives.StringValues queryVal;
 
-            if (Context.Request.Query.TryGetValue("error", out queryVal) &&
-                queryVal.FirstOrDefault() == "noLogin")
-            {
-                <p class="text-danger">You must login in order to use the app.</p>
-            }
-            else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
-                queryVal.FirstOrDefault() == "wrongRole")
-            {
-                <p class="text-danger">You cannot access this site.</p>
-            }
-        }
-    </div>
-    <div>
-        @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { role = "form" }))
-        {
-            @Html.AntiForgeryToken()
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" class="form-control" name="username" id="username" aria-describedby="userName" placeholder="Username">
+                    if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+                        queryVal.FirstOrDefault() == "noLogin")
+                    {
+                        <p class="text-danger">You must login in order to use the app.</p>
+                    }
+                    else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+                        queryVal.FirstOrDefault() == "wrongRole")
+                    {
+                        <p class="text-danger">You cannot access this site.</p>
+                    }
+                }
             </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+            <div>
+                @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" name="username" id="username" aria-describedby="userName" placeholder="Username">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                }
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        }
+        </div>
     </div>
 </div>
+
+<style>
+
+    .back {
+        background: #e2e2e2;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+    }
+
+    .div-center {
+        width: 90%;
+        height: 400px;
+        background-color: #fff;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+        max-width: 400px;
+        max-height: 100%;
+        overflow: auto;
+        padding: 1em 2em;
+        display: table;
+    }
+
+    div.content {
+        display: table-cell;
+        vertical-align: middle;
+    }
+</style>

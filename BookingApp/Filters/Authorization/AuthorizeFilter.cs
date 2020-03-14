@@ -40,7 +40,8 @@ namespace BookingApp.Filters.Authorization
             }
             else
             {
-                context.Result = new RedirectResult($"~/{context.HttpContext.Request.Path.ToString().Remove(0, 1)}");
+                context.Result = new RedirectResult("~/Home/Index");
+                //context.Result = new RedirectResult($"~/{context.HttpContext.Request.Path.ToString().Remove(0, 1)}");
             }
             return;
         }
