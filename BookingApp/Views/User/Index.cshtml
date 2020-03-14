@@ -27,7 +27,10 @@
         }
     </div>
     <div>
-        <form method="POST">
+        @using (Html.BeginForm("Index", "User", FormMethod.Post, new { role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" class="form-control" name="username" maxlength="16" id="username" aria-describedby="username" placeholder="Username" required />
@@ -45,6 +48,6 @@
             </div>
             @Html.ActionLink("Back", "Index", "Library", new { }, new { @class = "btn btn-info" })
             <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+         }
     </div>
 </div>

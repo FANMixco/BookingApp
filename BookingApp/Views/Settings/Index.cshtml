@@ -22,7 +22,10 @@
         }
     </div>
     <div>
-        <form method="POST">
+        @using (Html.BeginForm("Index", "Settings", FormMethod.Post, new { role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+
             <div class="form-group">
                 <label for="max">Max Reservation Days</label>
                 <input type="number" class="form-control" name="max" id="max" max="10" aria-describedby="maxTime" placeholder="Max" value="@Model.MaxTime" required />
@@ -45,6 +48,6 @@
             </div>
             @Html.ActionLink("Back", "Index", "Library", new { }, new { @class = "btn btn-info" })
             <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+         }
     </div>
 </div>

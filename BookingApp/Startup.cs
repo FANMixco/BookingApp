@@ -89,13 +89,8 @@ namespace BookingApp
 
             app.UseAuthorization();
 
+            //app.UseCookiePolicy();
             app.UseSession();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-            });
 
             //Add JWToken to all incoming HTTP Request Header
             app.Use(async (context, next) =>
@@ -103,12 +98,19 @@ namespace BookingApp
                 var JWToken = context.Session.GetString("JWToken");
                 if (!string.IsNullOrEmpty(JWToken))
                 {
-                    context.Request.Headers.Add("Authorization", $"Bearer {JWToken}");
+                    context.Request.Headers.Add("Authorization", "Bearer " + JWToken);
                 }
                 await next();
             });
             //Add JWToken Authentication service
             app.UseAuthentication();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
         }
     }
 }

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Diagnostics;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using BookingApp.DB.Classes;
 using BookingApp.DB.Classes.DB;
 using BookingApp.Models;
@@ -10,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 //using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 
 namespace BookingApp.Controllers
 {
@@ -71,36 +67,6 @@ namespace BookingApp.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public string LoginUser(Users user)
-        {
-            try
-            {
-                //If it's registered user, check user password stored in Database 
-                //For demo, password is not hashed. Simple string comparison 
-                //In real, password would be hashed and stored in DB. Before comparing, hash the password
-                //Authentication successful, Issue Token with user credentials
-                //Provide the security key which was given in the JWToken configuration in Startup.cs
-                var key = Encoding.ASCII.GetBytes(Startup.JWT_KEY);
-                //Generate Token for user 
-                var JWToken = new JwtSecurityToken(
-                    issuer: Startup.ADDRESS,
-                    audience: Startup.ADDRESS,
-                    claims: TokenProvider.GetUserClaims(user),
-                    notBefore: new DateTimeOffset(DateTime.Now).DateTime,
-                    expires: new DateTimeOffset(DateTime.Now.AddDays(1)).DateTime,
-                    //Using HS256 Algorithm to encrypt Token
-                    signingCredentials: new SigningCredentials(new SymmetricSecurityKey(key),
-                                        SecurityAlgorithms.HmacSha256Signature)
-                );
-
-                //return token
-                return new JwtSecurityTokenHandler().WriteToken(JWToken);
-            }
-            catch
-            {
-                return null;
-            }
-        }
 
         [ValidateAntiForgeryToken]
         [HttpPost]
@@ -117,7 +83,7 @@ namespace BookingApp.Controllers
 
             if (user != null)
             {
-                _httpContextAccessor.HttpContext.Session.SetString("JWToken", LoginUser(user));
+                _httpContextAccessor.HttpContext.Session.SetString("JWToken", TokenProvider.LoginUser(user));
 
                 _httpContextAccessor.HttpContext.Session.SetString("user", username);
                 _httpContextAccessor.HttpContext.Session.SetInt32("role", user.Role);

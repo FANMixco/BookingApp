@@ -19,12 +19,10 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Classes\.DS_Store" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Remove="Views\ChangePassword\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BookingApp.MailLibrary\BookingApp.MailLibrary.csproj">

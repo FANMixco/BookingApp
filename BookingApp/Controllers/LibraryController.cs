@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BookingApp.Controllers
 {
-    //[Authorize(Roles.ADMIN)]
+    [Authorize(Roles.ADMIN)]
     public class LibraryController : Controller
     {
         const int RETURN_DAYS = 2;
@@ -16,8 +16,6 @@ namespace BookingApp.Controllers
         //const string BODY_CANCEL = "Your reservation of {0} has been canceled.";
 
         private readonly IHttpContextAccessor _httpContextAccessor;
-
-        private int? Role { get; set; }
 
         public LibraryController(IHttpContextAccessor httpContextAccessor)
         {
@@ -33,18 +31,6 @@ namespace BookingApp.Controllers
 
         public IActionResult Index()
         {
-            Role = _httpContextAccessor.HttpContext.Session.GetInt32("role");
-
-            if (Role == null)
-            {
-                return RedirectToAction("Index", "Home", new { error = "noLogin" });
-            }
-            else if (Role != 0)
-            {
-                _httpContextAccessor.HttpContext.Session.Clear();
-                return RedirectToAction("Index", "Home", new { error = "wrongRole" });
-            }
-
             using var db = new BookingContext();
 
             var booksAvailable = new AvailableBooksViewModel();
@@ -121,7 +107,7 @@ namespace BookingApp.Controllers
                 var user = _httpContextAccessor.HttpContext.Session.GetString("user");
                 using var db = new BookingContext();
 
-                if (Role == 0 && db.Users.Count(x => x.Role == 0) == 1)
+                if (db.Users.Count(x => x.Role == 0) == 1)
                 {
                     return RedirectToAction("Index", "Library", new { error = "oneAdmin" });
                 }

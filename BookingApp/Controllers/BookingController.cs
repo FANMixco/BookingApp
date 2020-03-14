@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Linq;
 using BookingApp.DB.Classes.DB;
+using BookingApp.Filters.Authorization;
 using BookingApp.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingApp.Controllers
 {
+    [Authorize(Roles.CUSTOMER)]
     public class BookingController : Controller
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         const int MAX_COPIES = 2;
-
-        private int? Role { get; set; }
 
         private static int UserID { get; set; }
 
@@ -97,18 +97,6 @@ namespace BookingApp.Controllers
 
         public IActionResult Index()
         {
-            Role = _httpContextAccessor.HttpContext.Session.GetInt32("role");
-
-            if (Role == null)
-            {
-                return RedirectToAction("Index", "Home", new { error = "noLogin" });
-            }
-            else if (Role != 1)
-            {
-                _httpContextAccessor.HttpContext.Session.Clear();
-                return RedirectToAction("Index", "Home", new { error = "wrongRole" });
-            }
-
             using var db = new BookingContext();
 
             var booksAvailable = new ReservationsModel();

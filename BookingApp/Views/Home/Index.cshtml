@@ -20,7 +20,9 @@
         }
     </div>
     <div>
-        <form method="POST">
+        @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { role = "form" }))
+        {
+            @Html.AntiForgeryToken()
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" class="form-control" name="username" id="username" aria-describedby="userName" placeholder="Username">
@@ -30,6 +32,6 @@
                 <input type="password" class="form-control" id="password" name="password" placeholder="Password">
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-    </div>    
+        }
+    </div>
 </div>
