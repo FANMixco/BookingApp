@@ -1,7 +1,71 @@
-﻿
+﻿@using Microsoft.AspNetCore.Http
+
 @{
     ViewData["Title"] = "Profile";
 }
 
-<h1>Profile</h1>
+<div class="container">
+    <div class="div-center">
+        <h4>Profile</h4>
+        <div class="row">
+            @{
+                Microsoft.Extensions.Primitives.StringValues queryVal;
 
+                if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+                    queryVal.FirstOrDefault() == "error")
+                {
+                    <p class="text-danger">Try again later.</p>
+                }
+                else if (Context.Request.Query.TryGetValue("error", out queryVal) && queryVal.FirstOrDefault() == "registered")
+                {
+                    <p class="text-danger">This email is already registered.</p>
+                }
+                else if (Context.Request.Query.TryGetValue("msg", out queryVal) &&
+                    queryVal.FirstOrDefault() == "updated")
+                {
+                    <p class="text-success">Your account has been updated.</p>
+                }
+            }
+        </div>
+        <div>
+            @using (Html.BeginForm("Index", "Profile", FormMethod.Post, new { role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-group">
+                    <label for="max">Username</label>
+                    <input type="text" class="form-control" id="username" maxlength="50" aria-describedby="username" placeholder="Username" value="@Context.Session.GetString("user")" readonly required />
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" name="email" id="email" maxlength="50" aria-describedby="email" placeholder="Email" value="@Model.Email" required />
+                </div>
+                <div class="actions">
+                    @if (Context.Session.GetInt32("role") == 0)
+                    {
+                        @Html.ActionLink("Back", "Index", "Library", new { }, new { @class = "btn btn-info" })
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Back", "Index", "Booking", new { }, new { @class = "btn btn-info" })
+                    }
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .actions {
+        text-align: right;
+    }
+
+    .div-center {
+        width: 90%;
+        margin: auto;
+        max-width: 400px;
+        overflow: auto;
+        padding: 1em 2em;
+    }
+</style>

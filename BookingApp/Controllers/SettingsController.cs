@@ -2,6 +2,7 @@
 using BookingApp.DB.Classes.DB;
 using BookingApp.Filters.Authorization;
 using BookingApp.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingApp.Controllers
@@ -10,10 +11,11 @@ namespace BookingApp.Controllers
     public class SettingsController : Controller
     {
         private const string PASS_KEY = "!emJ(?w)Sx_5S-3L";
+        readonly IHttpContextAccessor _httpContextAccessor;
 
-        public SettingsController()
+        public SettingsController(IHttpContextAccessor httpContextAccessor)
         {
-
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public IActionResult Index()
@@ -39,7 +41,14 @@ namespace BookingApp.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return RedirectToAction("Index", "Library");
+                    if (_httpContextAccessor.HttpContext.Session.GetInt32("role") == 0)
+                    {
+                        return RedirectToAction("Index", "Library");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Booking");
+                    }
                 }
 
                 using var db = new BookingContext();
