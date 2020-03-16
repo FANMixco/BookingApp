@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BookingApp\BookingApp.csproj" />
+    <ProjectReference Include="..\BookingApp.MailServices\BookingApp.MailServices.csproj" />
   </ItemGroup>
 
 </Project>
