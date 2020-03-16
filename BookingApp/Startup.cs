@@ -16,12 +16,13 @@ namespace BookingApp
     {
         public const string ADDRESS = "https://localhost:5001/";
         public const string JWT_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+        private const string DB_FIRST_TIME = "dbFirstTime.txt";
 
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
 
-            if (!System.IO.File.Exists("dbFirstTime.txt"))
+            if (!System.IO.File.Exists(DB_FIRST_TIME))
             {
                 using var db = new DB.Classes.DB.BookingContext();
 #if DEBUG || UnitTest
@@ -31,8 +32,9 @@ namespace BookingApp
                 if (db.CleanDB())
                 {
 #endif
-                    System.IO.File.WriteAllText("dbFirstTime.txt", DateTime.Now.ToString());
+                    System.IO.File.WriteAllText(DB_FIRST_TIME, DateTime.Now.ToString());
                 }
+                System.IO.File.SetAttributes(DB_FIRST_TIME, System.IO.File.GetAttributes(DB_FIRST_TIME) | System.IO.FileAttributes.Hidden);
             }
         }
 
