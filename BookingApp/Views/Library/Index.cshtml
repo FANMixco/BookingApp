@@ -270,7 +270,7 @@
                                             @Html.DisplayFor(modelItem => item.Registered)
                                         </td>
                                         <td>
-                                            @Html.ActionLink("Edit", "Edit", "User", new { id = item.UserId })
+                                            @Html.ActionLink("Edit", "Update", "User", new { id = item.UserId })
                                         </td>
                                         <td>
                                             @Html.ActionLink("Delete", "DeleteUser", "Library", new { id = item.UserId }, new { @onclick = "return confirm('Are you sure?')" })

@@ -21,6 +21,17 @@ namespace BookingApp
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            if (!System.IO.File.Exists("dbFirstTime.txt"))
+            {
+                using var db = new DB.Classes.DB.BookingContext();
+#if DEBUG
+                db.DefaultData();
+#else
+                db.CleanDB();
+#endif
+                System.IO.File.WriteAllText("dbFirstTime.txt", DateTime.Now.ToString());
+            }
         }
 
         public IConfiguration Configuration { get; }
@@ -78,7 +89,7 @@ namespace BookingApp
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Home/Error500");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }

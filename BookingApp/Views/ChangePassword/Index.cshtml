@@ -1,61 +1,80 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Http
+
+@{
     ViewData["Title"] = "Change Password";
 }
 
 <div class="container">
-    <h4>Change password</h4>
-    <div class="row">
-        @{
-            Microsoft.Extensions.Primitives.StringValues queryVal;
+    <div class="div-center">
+        <h4>Change password</h4>
+        <div class="row">
+            @{
+                Microsoft.Extensions.Primitives.StringValues queryVal;
 
-            if (Context.Request.Query.TryGetValue("error", out queryVal) &&
-                queryVal.FirstOrDefault() == "wrongPasswords")
-            {
-                <p class="text-danger">Your new password and confirmation are different.</p>
+                if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+                    queryVal.FirstOrDefault() == "wrongPasswords")
+                {
+                    <p class="text-danger">Your new password and confirmation are different.</p>
+                }
+                else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+                    queryVal.FirstOrDefault() == "wrongOld")
+                {
+                    <p class="text-danger">Your old password is wrong.</p>
+                }
+                else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+                    queryVal.FirstOrDefault() == "error")
+                {
+                    <p class="text-danger">Try again later.</p>
+                }
+                else if (Context.Request.Query.TryGetValue("msg", out queryVal) &&
+                    queryVal.FirstOrDefault() == "updated")
+                {
+                    <p class="text-success">Your password was updated.</p>
+                }
             }
-            else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
-                queryVal.FirstOrDefault() == "wrongOld")
+        </div>
+        <div>
+            @using (Html.BeginForm("Index", "ChangePassword", FormMethod.Post, new { role = "form" }))
             {
-                <p class="text-danger">Your old password is wrong.</p>
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <label for="oldPassword">Old password</label>
+                    <input type="password" class="form-control" name="oldPassword" maxlength="16" id="oldPassword" aria-describedby="username" placeholder="Old password" required />
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">New password</label>
+                    <input type="password" class="form-control" id="newPassword" maxlength="16" name="newPassword" placeholder="New password" required />
+                </div>
+                <div class="form-group">
+                    <label for="rPassword">Repeat password</label>
+                    <input type="password" class="form-control" id="rPassword" maxlength="16" name="rPassword" placeholder="Repeat password" required />
+                </div>
+                <div class="actions">
+                    @if (Context.Session.GetInt32("role") == 0)
+                    {
+                        @Html.ActionLink("Back", "Index", "Library", new { }, new { @class = "btn btn-info" })
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Back", "Index", "Booking", new { }, new { @class = "btn btn-info" })
+                    }
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
             }
-            else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
-               queryVal.FirstOrDefault() == "error")
-            {
-                <p class="text-danger">Try again later.</p>
-            }
-            else if (Context.Request.Query.TryGetValue("msg", out queryVal) &&
-              queryVal.FirstOrDefault() == "updated")
-            {
-                <p class="text-success">Your password was updated.</p>
-            }
-        }
-    </div>
-    <div>
-        @using (Html.BeginForm("Index", "ChangePassword", FormMethod.Post, new { role = "form" }))
-        {
-            @Html.AntiForgeryToken()
-            <div class="form-group">
-                <label for="oldPassword">Old password</label>
-                <input type="password" class="form-control" name="oldPassword" maxlength="16" id="oldPassword" aria-describedby="username" placeholder="Old password" required />
-            </div>
-            <div class="form-group">
-                <label for="newPassword">New password</label>
-                <input type="password" class="form-control" id="newPassword" maxlength="16" name="newPassword" placeholder="New password" required />
-            </div>
-            <div class="form-group">
-                <label for="rPassword">Repeat password</label>
-                <input type="password" class="form-control" id="rPassword" maxlength="16" name="rPassword" placeholder="Repeat password" required />
-            </div>
-            <div class="actions">
-                @Html.ActionLink("Back", "Index", "Home", new { }, new { @class = "btn btn-info" })
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
-        }
+        </div>
     </div>
 </div>
 
 <style>
     .actions {
         text-align: right;
+    }
+
+    .div-center {
+        width: 90%;
+        margin: auto;
+        max-width: 400px;
+        overflow: auto;
+        padding: 1em 2em;
     }
 </style>

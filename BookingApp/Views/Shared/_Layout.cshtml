@@ -24,7 +24,9 @@
 
                     <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                         <ul class="nav navbar-nav ml-auto">
-                            <li class="nav-item">Welcome @Context.Session.GetString("user")!</li>
+                            <li class="nav-item">
+                                Welcome                             @Html.ActionLink(Context.Session.GetString("user"), "Index", "Profile")!
+                            </li>
                             <li class="nav-item">@Html.ActionLink("Change Password", "Index", "ChangePassword")</li>
                             @if (Context.Session.GetInt32("role") == 0)
                             {
