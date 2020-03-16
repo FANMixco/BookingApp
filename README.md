@@ -19,5 +19,5 @@ A simple app for reserving books in a Library. Powered by:
 [![preview2][2]][2]
 
 
-  [1]: https://i.stack.imgur.com/dz1iJ.png
-  [2]: https://i.stack.imgur.com/pUdx0.png
+  [1]: https://mir-cdn.behance.net/v1/rendition/project_modules/fs/c8bae393836207.5e6f59f3edf60.png
+  [2]: https://mir-cdn.behance.net/v1/rendition/project_modules/fs/8731a293836207.5e6f59f3eeb22.png
