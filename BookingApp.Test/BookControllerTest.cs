@@ -11,7 +11,7 @@ namespace BookingApp.Test
 
         public BookControllerTest()
         {
-            _controller = new BookController(null);
+            _controller = new BookController();
         }
 
         [Fact]

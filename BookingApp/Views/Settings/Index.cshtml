@@ -5,6 +5,7 @@
 @model BookingApp.Models.SettingsModel
 
 <div class="container">
+    <h4>Settings</h4>
     <div class="row">
         @{
             Microsoft.Extensions.Primitives.StringValues queryVal;
@@ -22,7 +23,10 @@
         }
     </div>
     <div>
-        <form method="POST">
+        @using (Html.BeginForm("Index", "Settings", FormMethod.Post, new { role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+
             <div class="form-group">
                 <label for="max">Max Reservation Days</label>
                 <input type="number" class="form-control" name="max" id="max" max="10" aria-describedby="maxTime" placeholder="Max" value="@Model.MaxTime" required />
@@ -43,8 +47,16 @@
                 <label for="port">Port</label>
                 <input type="number" class="form-control" name="port" id="port" aria-describedby="port" placeholder="Port" value="@Model.Port" required />
             </div>
-            @Html.ActionLink("Back", "Index", "Library", new { }, new { @class = "btn btn-info" })
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+            <div class="actions">
+                @Html.ActionLink("Back", "Index", "Library", new { }, new { @class = "btn btn-info" })
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+         }
     </div>
 </div>
+
+<style>
+    .actions {
+        text-align: right;
+    }
+</style>

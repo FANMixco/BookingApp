@@ -3,6 +3,7 @@
 }
 
 <div class="container">
+    <h4>New book</h4>
     <div class="row">
         @{
             Microsoft.Extensions.Primitives.StringValues queryVal;
@@ -25,7 +26,9 @@
         }
     </div>
     <div>
-        <form method="POST">
+        @using (Html.BeginForm("Index", "Book", FormMethod.Post, new { role = "form" }))
+        {
+            @Html.AntiForgeryToken()
             <div class="form-group">
                 <label for="book">Book</label>
                 <input type="text" class="form-control" name="book" id="book" maxlength="50" aria-describedby="bookName" placeholder="Book title" required>
@@ -46,11 +49,17 @@
                     <label for="[0]">Barcode #1</label><input type="text" class="form-control" minlength="8" name="[0]" id="[0]" aria-describedby="barcode" placeholder="Barcode" required>
                 </div>
             </div>
-            @Html.ActionLink("Back", "Index", "Library", new { }, new { @class = "btn btn-info" })
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+            <div class="actions">
+                @Html.ActionLink("Back", "Index", "Library", new { }, new { @class = "btn btn-info" })
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        }
     </div>
     <style>
+        .actions {
+            text-align: right;
+        }
+
         .btn-circle {
             width: 30px;
             height: 30px;

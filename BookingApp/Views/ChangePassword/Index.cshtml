@@ -3,6 +3,7 @@
 }
 
 <div class="container">
+    <h4>Change password</h4>
     <div class="row">
         @{
             Microsoft.Extensions.Primitives.StringValues queryVal;
@@ -29,13 +30,10 @@
             }
         }
     </div>
-    <div class="row">
-        <p>
-            @Html.ActionLink("Back", "Index", "Home")
-        </p>
-    </div>
-    <div class="row">
-        <form method="POST">
+    <div>
+        @using (Html.BeginForm("Index", "ChangePassword", FormMethod.Post, new { role = "form" }))
+        {
+            @Html.AntiForgeryToken()
             <div class="form-group">
                 <label for="oldPassword">Old password</label>
                 <input type="password" class="form-control" name="oldPassword" maxlength="16" id="oldPassword" aria-describedby="username" placeholder="Old password" required />
@@ -48,7 +46,16 @@
                 <label for="rPassword">Repeat password</label>
                 <input type="password" class="form-control" id="rPassword" maxlength="16" name="rPassword" placeholder="Repeat password" required />
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+            <div class="actions">
+                @Html.ActionLink("Back", "Index", "Home", new { }, new { @class = "btn btn-info" })
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        }
     </div>
 </div>
+
+<style>
+    .actions {
+        text-align: right;
+    }
+</style>

@@ -5,6 +5,7 @@
 @model BookingApp.Models.UserCreateModel
 
 <div class="container">
+    <h4>New user</h4>
     <div class="row">
         @{
             Microsoft.Extensions.Primitives.StringValues queryVal;
@@ -27,7 +28,10 @@
         }
     </div>
     <div>
-        <form method="POST">
+        @using (Html.BeginForm("Index", "User", FormMethod.Post, new { role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" class="form-control" name="username" maxlength="16" id="username" aria-describedby="username" placeholder="Username" required />
@@ -43,8 +47,16 @@
             <div class="form-group">
                 <select asp-for="SelectedRole" asp-items="Model.RolesModel" class="form-control"></select>
             </div>
-            @Html.ActionLink("Back", "Index", "Library", new { }, new { @class = "btn btn-info" })
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+            <div class="actions">
+                @Html.ActionLink("Back", "Index", "Library", new { }, new { @class = "btn btn-info" })
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+         }
     </div>
 </div>
+
+<style>
+    .actions {
+        text-align: right;
+    }
+</style>

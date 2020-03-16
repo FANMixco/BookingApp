@@ -2,36 +2,22 @@ using System;
 using System.Linq;
 using BookingApp.DB.Classes;
 using BookingApp.DB.Classes.DB;
+using BookingApp.Filters.Authorization;
 using BookingApp.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingApp.Controllers
 {
+    [Authorize(Roles.ADMIN)]
     public class UserController : Controller
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private int? Role { get; set; }
-
-        public UserController(IHttpContextAccessor httpContextAccessor)
+        public UserController()
         {
-            _httpContextAccessor = httpContextAccessor;
+
         }
 
         public IActionResult Index()
         {
-            Role = _httpContextAccessor.HttpContext.Session.GetInt32("role");
-
-            if (Role == null)
-            {
-                return RedirectToAction("Index", "Home", new { error = "noLogin" });
-            }
-            else if (Role != 0)
-            {
-                _httpContextAccessor.HttpContext.Session.Clear();
-                return RedirectToAction("Index", "Home", new { error = "wrongRole" });
-            }
-
             return View(new UserCreateModel());
         }
 
@@ -117,36 +103,24 @@ namespace BookingApp.Controllers
 
         public IActionResult Update(int id)
         {
-            Role = _httpContextAccessor.HttpContext.Session.GetInt32("role");
-
-            if (Role == null)
-            {
-                return RedirectToAction("Index", "Home", new { error = "noLogin" });
-            }
-            else if (Role != 0)
-            {
-                _httpContextAccessor.HttpContext.Session.Clear();
-                return RedirectToAction("Index", "Home", new { error = "wrongRole" });
-            }
-
-            UserUpdateModel model = new UserUpdateModel();
             using var db = new BookingContext();
 
             var users = db.Users.FirstOrDefault(x => x.UserId == id);
 
             if (users != null)
             {
-                model.ID = id;
-                model.Username = users.Username;
-                model.SelectedRole = users.Role;
-                model.Email = users.Email;
+                return base.View(new UserUpdateModel
+                {
+                    ID = id,
+                    Username = users.Username,
+                    SelectedRole = users.Role,
+                    Email = users.Email
+                });
             }
             else
             {
-                RedirectToAction("Index", "Library", new { error = "wrongUser" });
+                return RedirectToAction("Index", "Library", new { error = "wrongUser" });
             }
-
-            return View(model);
         }
     }
 }

@@ -1,36 +1,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using BookingApp.DB.Classes.DB;
-using Microsoft.AspNetCore.Http;
+using BookingApp.Filters.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingApp.Controllers
 {
+    [Authorize(Roles.ADMIN)]
     public class BookController : Controller
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private static int? Role { get; set; }
-
-        public BookController(IHttpContextAccessor httpContextAccessor)
+        public BookController()
         {
-            _httpContextAccessor = httpContextAccessor;
+
         }
 
         public IActionResult Index()
         {
-            Role = _httpContextAccessor.HttpContext.Session.GetInt32("role");
-
-            if (Role == null)
-            {
-                return RedirectToAction("Index", "Home", new { error = "noLogin" });
-            }
-            else if (Role != 0)
-            {
-                return RedirectToAction("Index", "Home", new { error = "wrongRole" });
-            }
             return View();
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult Index(string book, string author, string year, IList<string> barcodes)
         {
@@ -95,6 +84,7 @@ namespace BookingApp.Controllers
             }
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult Update(int id, string book, string author, string year, IList<string> barcodes)
         {
@@ -147,6 +137,7 @@ namespace BookingApp.Controllers
             }
         }
 
+        //Can be rented could be a solution to the point of a stolen book
         private static void UpdateBook(int id, string book, string author, int? year, IList<string> barcodes, BookingContext db)
         {
             var bookData = db.Books.FirstOrDefault(x => x.BookId == id);
@@ -175,29 +166,24 @@ namespace BookingApp.Controllers
                     db2.SaveChanges();
                 }
             }
-            //Can be rented could be a solution to the point of a robbed book
         }
 
         public IActionResult Update(int id)
         {
-            Role = _httpContextAccessor.HttpContext.Session.GetInt32("role");
-
-            if (Role == null)
-            {
-                return RedirectToAction("Index", "Home", new { error = "noLogin" });
-            }
-            else if (Role != 0)
-            {
-                return RedirectToAction("Index", "Home", new { error = "wrongRole" });
-            }
             using var db = new BookingContext();
             var book = db.Books.FirstOrDefault(x => x.BookId == id);
             if (book != null)
             {
                 var barcodes = (from bookCopies in db.BooksCopies where bookCopies.BookId == id orderby bookCopies.BooksCopiesId select new { id = bookCopies.BooksCopiesId, barcode = bookCopies.Barcode }).ToDictionary(item => item.id, item => item.barcode);
 
-                var model = new Models.BookUpdateModel() { ID = id, Book = book.Name, Author = book.Author, Year = book.PublicationYear, Barcodes = barcodes, Total = barcodes.Count() };
-                return View(model);
+                return View(new Models.BookUpdateModel() {
+                    ID = id,
+                    Book = book.Name,
+                    Author = book.Author,
+                    Year = book.PublicationYear,
+                    Barcodes = barcodes,
+                    Total = barcodes.Count()
+                });
             }
             else
             {

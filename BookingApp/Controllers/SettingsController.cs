@@ -1,48 +1,34 @@
 ﻿using System.Linq;
 using BookingApp.DB.Classes.DB;
+using BookingApp.Filters.Authorization;
 using BookingApp.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingApp.Controllers
 {
+    [Authorize(Roles.ADMIN)]
     public class SettingsController : Controller
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private static int? Role { get; set; }
-
         private const string PASS_KEY = "!emJ(?w)Sx_5S-3L";
 
-        public SettingsController(IHttpContextAccessor httpContextAccessor)
+        public SettingsController()
         {
-            _httpContextAccessor = httpContextAccessor;
+
         }
 
         public IActionResult Index()
         {
-            Role = _httpContextAccessor.HttpContext.Session.GetInt32("role");
-
-            if (Role == null)
-            {
-                return RedirectToAction("Index", "Home", new { error = "noLogin" });
-            }
-            else if (Role != 0)
-            {
-                return RedirectToAction("Index", "Home", new { error = "wrongRole" });
-            }
-
-            var model = new SettingsModel();
-
             using var db = new BookingContext();
 
             var settings = db.Settings.FirstOrDefault();
 
-            model.Port = settings.Port.ToString();
-            model.MaxTime = settings.MaxTime;
-            model.Email = settings.Email;
-            model.Host = settings.MailHost;
-
-            return View(model);
+            return View(new SettingsModel
+            {
+                Port = settings.Port.ToString(),
+                MaxTime = settings.MaxTime,
+                Email = settings.Email,
+                Host = settings.MailHost
+            });
         }
 
         [ValidateAntiForgeryToken]

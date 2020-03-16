@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Linq;
 using BookingApp.DB.Classes.DB;
+using BookingApp.Filters.Authorization;
 using BookingApp.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingApp.Controllers
 {
+    [Authorize(Roles.ADMIN)]
     public class LibraryController : Controller
     {
         const int RETURN_DAYS = 2;
@@ -14,8 +16,6 @@ namespace BookingApp.Controllers
         //const string BODY_CANCEL = "Your reservation of {0} has been canceled.";
 
         private readonly IHttpContextAccessor _httpContextAccessor;
-
-        private int? Role { get; set; }
 
         public LibraryController(IHttpContextAccessor httpContextAccessor)
         {
@@ -31,18 +31,6 @@ namespace BookingApp.Controllers
 
         public IActionResult Index()
         {
-            Role = _httpContextAccessor.HttpContext.Session.GetInt32("role");
-
-            if (Role == null)
-            {
-                return RedirectToAction("Index", "Home", new { error = "noLogin" });
-            }
-            else if (Role != 0)
-            {
-                _httpContextAccessor.HttpContext.Session.Clear();
-                return RedirectToAction("Index", "Home", new { error = "wrongRole" });
-            }
-
             using var db = new BookingContext();
 
             var booksAvailable = new AvailableBooksViewModel();
@@ -97,7 +85,7 @@ namespace BookingApp.Controllers
                 booksAvailable.Users.Add(new UsersModel
                 {
                     Username = users.Username,
-                    Role = users.Role == 0 ? "Admin" : "Reserver",
+                    Role = users.Role == 0 ? "Admin" : "Customer",
                     UserId = users.UserId,
                     Registered = users.Registered.ToString("yyyy-MM-dd"),
                     Email = users.Email
@@ -119,7 +107,7 @@ namespace BookingApp.Controllers
                 var user = _httpContextAccessor.HttpContext.Session.GetString("user");
                 using var db = new BookingContext();
 
-                if (Role == 0 && db.Users.Count(x => x.Role == 0) == 1)
+                if (db.Users.Count(x => x.Role == 0) == 1)
                 {
                     return RedirectToAction("Index", "Library", new { error = "oneAdmin" });
                 }

@@ -67,6 +67,7 @@ namespace BookingApp.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+
         [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult Index(string username, string password)
@@ -82,6 +83,8 @@ namespace BookingApp.Controllers
 
             if (user != null)
             {
+                _httpContextAccessor.HttpContext.Session.SetString("JWToken", TokenProvider.LoginUser(user));
+
                 _httpContextAccessor.HttpContext.Session.SetString("user", username);
                 _httpContextAccessor.HttpContext.Session.SetInt32("role", user.Role);
 

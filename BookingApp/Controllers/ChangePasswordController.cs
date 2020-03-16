@@ -1,23 +1,17 @@
 ﻿using BookingApp.DB.Classes;
 using BookingApp.DB.Classes.DB;
+using BookingApp.Filters.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
 namespace BookingApp.Controllers
 {
+    [Authorize(Roles.CUSTOMER, Roles.ADMIN)]
     public class ChangePasswordController : Controller
     {
         public IActionResult Index()
         {
-            var role = _httpContextAccessor.HttpContext.Session.GetInt32("role");
-
-            if (role == null)
-            {
-                _httpContextAccessor.HttpContext.Session.Clear();
-                return RedirectToAction("Index", "Home", new { error = "NoLogin" });
-            }
-
             return View();
         }
 
