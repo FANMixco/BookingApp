@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingApp.DB.Classes.DB
@@ -39,7 +41,7 @@ namespace BookingApp.DB.Classes.DB
               .HasKey(p => new { p.SettingsId });
         }
 
-        public void CleanDB()
+        public bool CleanDB()
         {
             try
             {
@@ -74,17 +76,18 @@ namespace BookingApp.DB.Classes.DB
                     db.Remove(item);
                     db.SaveChanges();
                 }
+                return true;
             }
-            catch { }
+            catch { return false; }
         }
 
-        public async void DefaultData()
+        public bool DefaultData()
         {
             try
             {
                 using var db = new BookingContext();
 
-                if (await db.Users.CountAsync() == 0)
+                if (db.Users.Count() == 0)
                 {
                     _ = db.Add(new Users() { Username = "admin", Role = 0, Email = "admin@noreply.com", Password = "admin", Registered = DateTime.Now });
                     _ = db.SaveChanges();
@@ -100,10 +103,12 @@ namespace BookingApp.DB.Classes.DB
                     _ = db.Add(new Books() { Name = "Harry Potter 5", Author = "J.K. Rowling", PublicationYear = 2003, Registered = DateTime.Now });
                     _ = db.SaveChanges();
                 }
+                return true;
             }
             catch (Exception ex)
             {
                 Console.Write(ex.Message);
+                return false;
             }
         }
     }

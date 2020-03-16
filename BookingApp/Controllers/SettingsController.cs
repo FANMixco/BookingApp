@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using BookingApp.DB.Classes.DB;
 using BookingApp.Filters.Authorization;
 using BookingApp.Models;

@@ -1,6 +1,5 @@
 using System;
 using System.Text;
-using BookingApp.DB.Classes;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,11 +25,14 @@ namespace BookingApp
             {
                 using var db = new DB.Classes.DB.BookingContext();
 #if DEBUG || UnitTest
-                db.DefaultData();
+                if (db.DefaultData())
+                { 
 #else
-                db.CleanDB();
+                if (db.CleanDB())
+                {
 #endif
-                System.IO.File.WriteAllText("dbFirstTime.txt", DateTime.Now.ToString());
+                    System.IO.File.WriteAllText("dbFirstTime.txt", DateTime.Now.ToString());
+                }
             }
         }
 
