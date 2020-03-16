@@ -25,7 +25,7 @@ namespace BookingApp
             if (!System.IO.File.Exists("dbFirstTime.txt"))
             {
                 using var db = new DB.Classes.DB.BookingContext();
-#if DEBUG
+#if DEBUG || UnitTest
                 db.DefaultData();
 #else
                 db.CleanDB();
@@ -44,7 +44,6 @@ namespace BookingApp
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
             });
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.Configure<DBInfoSettings>(Configuration.GetSection("DBInfo"));
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
             //Provide a secret key to Encrypt and Decrypt the Token
