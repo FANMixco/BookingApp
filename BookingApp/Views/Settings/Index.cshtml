@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Settings";
 }
 
@@ -15,6 +15,16 @@
                     queryVal.FirstOrDefault() == "error")
                 {
                     <p class="text-danger">Try again later.</p>
+                }
+                else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+                   queryVal.FirstOrDefault() == "emptyPassword")
+                {
+                    <p class="text-danger">You didn't type the email's password.</p>
+                }
+                else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+                    queryVal.FirstOrDefault() == "wrongEmailSettings")
+                {
+                    <p class="text-danger">You didn't configure the email settings.</p>
                 }
                 else if (Context.Request.Query.TryGetValue("msg", out queryVal) &&
                     queryVal.FirstOrDefault() == "updated")
@@ -34,11 +44,11 @@
                 </div>
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" class="form-control" name="email" id="email" maxlength="50" aria-describedby="email" placeholder="Email" value="@Model.Email" required />
+                    <input type="email" class="form-control" name="email" id="email" maxlength="50" aria-describedby="email" placeholder="Email" value="@Model.Email" />
                 </div>
                 <div class="form-group">
                     <label for="host">Host</label>
-                    <input type="text" class="form-control" name="host" id="host" aria-describedby="host" placeholder="Host" value="@Model.Host" required />
+                    <input type="text" class="form-control" name="host" id="host" aria-describedby="host" placeholder="Host" value="@Model.Host" />
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
@@ -46,7 +56,7 @@
                 </div>
                 <div class="form-group">
                     <label for="port">Port</label>
-                    <input type="number" class="form-control" name="port" id="port" aria-describedby="port" placeholder="Port" value="@Model.Port" required />
+                    <input type="number" class="form-control" name="port" id="port" aria-describedby="port" placeholder="Port" value="@Model.Port" />
                 </div>
                 <div class="actions">
                     @Html.ActionLink("Back", "Index", "Library", new { }, new { @class = "btn btn-info" })

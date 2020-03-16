@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using BookingApp.DB.Classes;
 using BookingApp.DB.Classes.DB;
@@ -7,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 //using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace BookingApp.Controllers
 {
@@ -15,32 +15,24 @@ namespace BookingApp.Controllers
     {
         //private readonly ILogger<HomeController> _logger;
 
-        private readonly DBInfoSettings _settings;
-
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        private static bool HasStarted = false;
-
-        public HomeController(IHttpContextAccessor httpContextAccessor, IOptions<DBInfoSettings> settings/*, ILogger<HomeController> logger*/)
+        public HomeController(IHttpContextAccessor httpContextAccessor/*, ILogger<HomeController> logger*/)
         {
             //_logger = logger;
 
             _httpContextAccessor = httpContextAccessor;
-
-            _settings = settings.Value;
-
-            if (string.IsNullOrEmpty(_httpContextAccessor.HttpContext.Request.Cookies["DBVersion"]) && !HasStarted)
-            {
-                using var db = new BookingContext();
-                db.DefaultData();
-
-                _httpContextAccessor.HttpContext.Response.Cookies.Append("DBVersion", _settings.Version);
-            }
-            HasStarted = true;
         }
 
         public IActionResult Index()
         {
+            using var db = new BookingContext();
+
+            if (db.Users.Count() == 0)
+            {
+                return RedirectToAction("FirstTime", "Home");
+            }
+
             var role = _httpContextAccessor.HttpContext.Session.GetInt32("role");
             if (role != null)
             {
@@ -55,6 +47,69 @@ namespace BookingApp.Controllers
             }
 
             return View();
+        }
+
+        public IActionResult FirstTime()
+        {
+            return View();
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public IActionResult FirstTime(string userName, string adminEmail, string adminPassword, string repeatPassword, string port, string max, string email, string host, string password)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return RedirectToAction("FirstTime", "Home");
+                }
+
+                if (adminPassword != repeatPassword)
+                {
+                    return RedirectToAction("FirstTime", "Home", new { msg = "wrongPasswords" });
+                }
+
+                if (!string.IsNullOrEmpty(email) && (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(port)))
+                {
+                    return RedirectToAction("FirstTime", "Home", new { error = "wrongEmailSettings" });
+                }
+
+                using var db = new BookingContext();
+
+                var user = new Users()
+                {
+                    Username = userName,
+                    Email = adminEmail,
+                    Password = Encryption.Encrypt(adminPassword),
+                    Role = 0
+                };
+                db.Add(user);
+                db.SaveChanges();
+
+                int? intPort = int.TryParse(port, out var tempVal) ? tempVal : (int?)null;
+
+                var settings = new Settings
+                {
+                    Port = intPort,
+                    Email = email,
+                    MaxTime = int.Parse(max),
+                    MailHost = host
+                };
+
+                if (!string.IsNullOrEmpty(password))
+                {
+                    settings.PasswordHost = DB.EncryptionMails.EncryptString(SettingsController.PASS_KEY, password);
+                }
+                db.Add(settings);
+                db.SaveChanges();
+
+                return RedirectToAction("Index", "Home", new { msg = "userCreated" });
+            }
+            catch
+            {
+                return RedirectToAction("FirstTime", "Home", new { error = "error" });
+            }
         }
 
         public IActionResult Privacy()

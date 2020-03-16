@@ -1,8 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BookingApp.DB.Classes.DB
 {
+    [Table("Users")]
     public class Users
     {
         [Key]
@@ -20,6 +22,7 @@ namespace BookingApp.DB.Classes.DB
         public DateTime Registered { get; set; }
     }
 
+    [Table("Books")]
     public class Books
     {
         [Key]
@@ -34,6 +37,7 @@ namespace BookingApp.DB.Classes.DB
         public DateTime Registered { get; set; }
     }
 
+    [Table("ReservedBook")]
     public class ReservedBook
     {
         [Key]
@@ -51,6 +55,7 @@ namespace BookingApp.DB.Classes.DB
         public DateTime? ReturnedDate { get; set; }
     }
 
+    [Table("BooksCopies")]
     public class BooksCopies
     {
         [Key]
@@ -67,6 +72,7 @@ namespace BookingApp.DB.Classes.DB
         public DateTime Registered { get; set; }
     }
 
+    [Table("Settings")]
     public class Settings
     {
         [Key]
@@ -74,13 +80,9 @@ namespace BookingApp.DB.Classes.DB
         public int SettingsId { get; set; }
         [Required]
         public int MaxTime { get; set; }
-        [Required]
         public string Email { get; set; }
-        [Required]
         public string MailHost { get; set; }
-        [Required]
         public string PasswordHost { get; set; }
-        [Required]
-        public int Port { get; set; }
+        public int? Port { get; set; }
     }
 }

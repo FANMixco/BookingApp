@@ -1,8 +1,7 @@
-﻿using System.Linq;
+using System.Linq;
 using BookingApp.DB.Classes.DB;
 using BookingApp.Filters.Authorization;
 using BookingApp.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingApp.Controllers
@@ -10,12 +9,11 @@ namespace BookingApp.Controllers
     [Authorize(Roles.ADMIN)]
     public class SettingsController : Controller
     {
-        private const string PASS_KEY = "!emJ(?w)Sx_5S-3L";
-        readonly IHttpContextAccessor _httpContextAccessor;
+        public const string PASS_KEY = "!emJ(?w)Sx_5S-3L";
 
-        public SettingsController(IHttpContextAccessor httpContextAccessor)
+        public SettingsController()
         {
-            _httpContextAccessor = httpContextAccessor;
+
         }
 
         public IActionResult Index()
@@ -41,21 +39,25 @@ namespace BookingApp.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    if (_httpContextAccessor.HttpContext.Session.GetInt32("role") == 0)
-                    {
-                        return RedirectToAction("Index", "Library");
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "Booking");
-                    }
+                    return RedirectToAction("Index", "Library");
+                }
+
+                if (!string.IsNullOrEmpty(email) && (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(port)))
+                {
+                    return RedirectToAction("Index", "Settings", new { error = "wrongEmailSettings" });
                 }
 
                 using var db = new BookingContext();
 
                 var settings = db.Settings.FirstOrDefault();
 
-                settings.Port = int.Parse(port);
+                if (string.IsNullOrEmpty(settings.Email) && !string.IsNullOrEmpty(email))
+                {
+                    return RedirectToAction("Index", "Settings", new { error = "emptyPassword" });
+                }
+
+                int? intPort = int.TryParse(port, out var tempVal) ? tempVal : (int?)null;
+                settings.Port = intPort;
                 settings.Email = email;
                 settings.MaxTime = int.Parse(max);
                 settings.MailHost = host;
@@ -67,11 +69,11 @@ namespace BookingApp.Controllers
                 db.Update(settings);
                 db.SaveChanges();
 
-                return RedirectToAction("Index", "User", new { msg = "updated" });
+                return RedirectToAction("Index", "Settings", new { msg = "updated" });
             }
             catch
             {
-                return RedirectToAction("Index", "User", new { error = "error" });
+                return RedirectToAction("Index", "Settings", new { error = "error" });
             }
         }
     }

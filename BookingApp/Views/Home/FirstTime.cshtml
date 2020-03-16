@@ -1,0 +1,89 @@
+﻿@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="container">
+    <div class="div-center">
+        <h4>Details</h4>
+        <div class="row">
+            @{
+                Microsoft.Extensions.Primitives.StringValues queryVal;
+
+                if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+                    queryVal.FirstOrDefault() == "error")
+                {
+                    <p class="text-danger">Try again later.</p>
+                }
+                else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+                    queryVal.FirstOrDefault() == "wrongEmailSettings")
+                {
+                    <p class="text-danger">You didn't configure the email settings.</p>
+                }
+                else if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+                    queryVal.FirstOrDefault() == "wrongPasswords")
+                {
+                    <p class="text-danger">Your new password and confirmation are different.</p>
+                }
+            }
+        </div>
+        <div>
+            @using (Html.BeginForm("FirstTime", "Home", FormMethod.Post, new { role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <h5>Admin</h5>
+                <div class="form-group">
+                    <label for="userName">Username</label>
+                    <input type="text" class="form-control" name="userName" id="userName" maxlength="16" aria-describedby="userName" placeholder="Username" required />
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" name="adminEmail" id="adminEmail" maxlength="50" aria-describedby="adminEmail" placeholder="Email" required />
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword">Password</label>
+                    <input type="password" class="form-control" id="adminPassword" name="adminPassword" placeholder="Password" required />
+                </div>
+                <div class="form-group">
+                    <label for="repeatPassword">Repeat password</label>
+                    <input type="password" class="form-control" id="repeatPassword" name="repeatPassword" placeholder="Repeat Password" required />
+                </div>
+                <h5>Email configuration</h5>
+                <div class="form-group">
+                    <label for="max">Max Reservation Days</label>
+                    <input type="number" class="form-control" name="max" id="max" max="10" aria-describedby="maxTime" placeholder="Max" required />
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" name="email" id="email" maxlength="50" aria-describedby="email" placeholder="Email" />
+                </div>
+                <div class="form-group">
+                    <label for="host">Host</label>
+                    <input type="text" class="form-control" name="host" id="host" aria-describedby="host" placeholder="Host" />
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" />
+                </div>
+                <div class="form-group">
+                    <label for="port">Port</label>
+                    <input type="number" class="form-control" name="port" id="port" aria-describedby="port" placeholder="Port" />
+                </div>
+                <button type="submit" class="btn btn-primary btnSubmit">Submit</button>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .btnSubmit {
+        width: 100% !important;
+    }
+
+    .div-center {
+        width: 90%;
+        margin: auto;
+        max-width: 400px;
+        overflow: auto;
+        padding: 1em 2em;
+    }
+</style>

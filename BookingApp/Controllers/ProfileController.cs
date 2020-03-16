@@ -56,7 +56,7 @@ namespace BookingApp.Controllers
 
                 user.Email = email;
                 db.Update(user);
-
+                db.SaveChanges();
                 return RedirectToAction("Index", "Profile", new { msg = "updated" });
             }
             catch

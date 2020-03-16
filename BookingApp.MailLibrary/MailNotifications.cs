@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using BookingApp.DB.Classes.DB;
@@ -17,6 +18,11 @@ namespace BookingApp.MailLibrary
 
                 var settings = db.Settings.FirstOrDefault();
 
+                if (string.IsNullOrEmpty(settings.Email))
+                {
+                    throw new Exception("Empty email");
+                }
+
                 // Credentials
                 var credentials = new NetworkCredential(settings.Email, DB.EncryptionMails.DecryptString(PASS_KEY, settings.PasswordHost));
                 // Mail message
@@ -31,7 +37,7 @@ namespace BookingApp.MailLibrary
                 // Smtp client
                 var client = new SmtpClient()
                 {
-                    Port = settings.Port,
+                    Port = settings.Port.Value,
                     DeliveryMethod = SmtpDeliveryMethod.Network,
                     UseDefaultCredentials = false,
                     Host = settings.MailHost,

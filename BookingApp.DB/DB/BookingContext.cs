@@ -39,6 +39,45 @@ namespace BookingApp.DB.Classes.DB
               .HasKey(p => new { p.SettingsId });
         }
 
+        public void CleanDB()
+        {
+            try
+            {
+                using var db = new BookingContext();
+
+                foreach (var item in db.ReservedBook)
+                {
+                    db.Remove(item);
+                    db.SaveChanges();
+                }
+
+                foreach (var item in db.BooksCopies)
+                {
+                    db.Remove(item);
+                    db.SaveChanges();
+                }
+
+                foreach (var item in db.Settings)
+                {
+                    db.Remove(item);
+                    db.SaveChanges();
+                }
+
+                foreach (var item in db.Books)
+                {
+                    db.Remove(item);
+                    db.SaveChanges();
+                }
+
+                foreach (var item in db.Users)
+                {
+                    db.Remove(item);
+                    db.SaveChanges();
+                }
+            }
+            catch { }
+        }
+
         public async void DefaultData()
         {
             try

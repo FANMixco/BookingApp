@@ -19,6 +19,11 @@
                     {
                         <p class="text-danger">You cannot access this site.</p>
                     }
+                    else if (Context.Request.Query.TryGetValue("msg", out queryVal) &&
+                   queryVal.FirstOrDefault() == "userCreated")
+                    {
+                        <p class="text-success">Your user was created. Please login</p>
+                    }
                 }
             </div>
             <div>
@@ -48,7 +53,6 @@
     .div-center {
         width: 90%;
         height: 400px;
-        background-color: #fff;
         position: absolute;
         left: 0;
         right: 0;
