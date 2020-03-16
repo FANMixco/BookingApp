@@ -5,58 +5,67 @@
 @model BookingApp.Models.SettingsModel
 
 <div class="container">
-    <h4>Settings</h4>
-    <div class="row">
-        @{
-            Microsoft.Extensions.Primitives.StringValues queryVal;
+    <div class="div-center">
+        <h4>Settings</h4>
+        <div class="row">
+            @{
+                Microsoft.Extensions.Primitives.StringValues queryVal;
 
-            if (Context.Request.Query.TryGetValue("error", out queryVal) &&
-                queryVal.FirstOrDefault() == "error")
-            {
-                <p class="text-danger">Try again later.</p>
+                if (Context.Request.Query.TryGetValue("error", out queryVal) &&
+                    queryVal.FirstOrDefault() == "error")
+                {
+                    <p class="text-danger">Try again later.</p>
+                }
+                else if (Context.Request.Query.TryGetValue("msg", out queryVal) &&
+                    queryVal.FirstOrDefault() == "updated")
+                {
+                    <p class="text-success">The settings were updated.</p>
+                }
             }
-            else if (Context.Request.Query.TryGetValue("msg", out queryVal) &&
-                queryVal.FirstOrDefault() == "updated")
+        </div>
+        <div>
+            @using (Html.BeginForm("Index", "Settings", FormMethod.Post, new { role = "form" }))
             {
-                <p class="text-success">The settings were updated.</p>
-            }
-        }
-    </div>
-    <div>
-        @using (Html.BeginForm("Index", "Settings", FormMethod.Post, new { role = "form" }))
-        {
-            @Html.AntiForgeryToken()
+                @Html.AntiForgeryToken()
 
-            <div class="form-group">
-                <label for="max">Max Reservation Days</label>
-                <input type="number" class="form-control" name="max" id="max" max="10" aria-describedby="maxTime" placeholder="Max" value="@Model.MaxTime" required />
-            </div>
-            <div class="form-group">
-                <label for="max">Email</label>
-                <input type="email" class="form-control" name="email" id="email" maxlength="50" aria-describedby="email" placeholder="Email" value="@Model.Email" required />
-            </div>
-            <div class="form-group">
-                <label for="host">Host</label>
-                <input type="text" class="form-control" name="host" id="host" aria-describedby="host" placeholder="Host" value="@Model.Host" required />
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="Password" />
-            </div>
-            <div class="form-group">
-                <label for="port">Port</label>
-                <input type="number" class="form-control" name="port" id="port" aria-describedby="port" placeholder="Port" value="@Model.Port" required />
-            </div>
-            <div class="actions">
-                @Html.ActionLink("Back", "Index", "Library", new { }, new { @class = "btn btn-info" })
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
-         }
+                <div class="form-group">
+                    <label for="max">Max Reservation Days</label>
+                    <input type="number" class="form-control" name="max" id="max" max="10" aria-describedby="maxTime" placeholder="Max" value="@Model.MaxTime" required />
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" name="email" id="email" maxlength="50" aria-describedby="email" placeholder="Email" value="@Model.Email" required />
+                </div>
+                <div class="form-group">
+                    <label for="host">Host</label>
+                    <input type="text" class="form-control" name="host" id="host" aria-describedby="host" placeholder="Host" value="@Model.Host" required />
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" />
+                </div>
+                <div class="form-group">
+                    <label for="port">Port</label>
+                    <input type="number" class="form-control" name="port" id="port" aria-describedby="port" placeholder="Port" value="@Model.Port" required />
+                </div>
+                <div class="actions">
+                    @Html.ActionLink("Back", "Index", "Library", new { }, new { @class = "btn btn-info" })
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            }
+        </div>
     </div>
 </div>
 
 <style>
     .actions {
         text-align: right;
+    }
+    .div-center {
+        width: 90%;
+        margin: auto;
+        max-width: 400px;
+        overflow: auto;
+        padding: 1em 2em;
     }
 </style>
