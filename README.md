@@ -21,3 +21,6 @@ A simple app for reserving books in a Library. Powered by:
 
   [1]: https://mir-cdn.behance.net/v1/rendition/project_modules/fs/c8bae393836207.5e6f59f3edf60.png
   [2]: https://mir-cdn.behance.net/v1/rendition/project_modules/fs/8731a293836207.5e6f59f3eeb22.png
+
+## Note:
+The default user and password are **admin**.
