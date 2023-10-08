@@ -25,9 +25,9 @@
                     <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                         <ul class="nav navbar-nav ml-auto">
                             <li class="nav-item">
-                                Welcome                             @Html.ActionLink(Context.Session.GetString("user"), "Index", "Profile")!
+                                Welcome @Html.ActionLink(Context.Session.GetString("user"), "Index", "Profile")!
                             </li>
-                            <li class="nav-item">@Html.ActionLink("Change Password", "Index", "ChangePassword")</li>
+                            <li class="nav-item">@Html.ActionLink("Change password", "Index", "ChangePassword")</li>
                             @if (Context.Session.GetInt32("role") == 0)
                             {
                                 <li class="nav-item">@Html.ActionLink("Settings", "Index", "Settings")</li>
@@ -35,12 +35,12 @@
                             <li class="nav-item">
                                 @if (Context.Session.GetInt32("role") == 0)
                                 {
-                                    @Html.ActionLink("Log Out", "LogOut", "Library")
+                                    @Html.ActionLink("Log out", "LogOut", "Library")
 
                                 }
                                 else
                                 {
-                                    @Html.ActionLink("Log Out", "LogOut", "Booking")
+                                    @Html.ActionLink("Log out", "LogOut", "Booking")
                                 }
                             </li>
                         </ul>
@@ -57,7 +57,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container text-center">
-            &copy; 2020 - <a href="https://federiconavarrete.com">Federico Navarrete</a> and <a href="https://supernovaic.tk">Supernova IC</a>
+            &copy; 2020 - 2023, <a href="https://federiconavarrete.com">Federico Navarrete</a> and <a href="https://supernovaic.tk">Supernova IC</a>
         </div>
     </footer>
 

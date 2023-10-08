@@ -71,7 +71,7 @@ namespace BookingApp.Controllers
 
                 var user = db.Users.FirstOrDefault(x => x.UserId == id);
 
-                if (user.Email != email && db.Users.Count(x => x.Email == email) > 0)
+                if (user.Email != email && db.Users.Any(x => x.Email == email))
                 {
                     return RedirectToAction("Update", "User", new { error = "sameEmail" });
                 }

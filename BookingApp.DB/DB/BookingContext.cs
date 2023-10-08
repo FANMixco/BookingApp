@@ -7,6 +7,8 @@ namespace BookingApp.DB.Classes.DB
 {
     public class BookingContext : DbContext
     {
+        const string DBName = "booking.db";
+
         public DbSet<Users> Users { get; set; }
         public DbSet<Books> Books { get; set; }
         public DbSet<ReservedBook> ReservedBook { get; set; }
@@ -18,7 +20,7 @@ namespace BookingApp.DB.Classes.DB
             => options.UseSqlite($"Data Source=booking.test.db");
 #else
         protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite($"Data Source=booking.db");
+            => options.UseSqlite($"Data Source={DBName}");
 #endif
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
