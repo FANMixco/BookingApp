@@ -4,7 +4,7 @@
 
 A simple app for reserving books in a Library. Powered by:
 
-- ASP .NET Core MVC 3+
+- ASP .NET Core MVC 7+
 - Entity Framework Core for SQLite
 - SQLite
 - BootStrap
