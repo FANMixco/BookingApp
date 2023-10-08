@@ -26,7 +26,7 @@ namespace BookingApp
             {
                 using var db = new DB.Classes.DB.BookingContext();
 #if DEBUG || UnitTest
-                if (db.DefaultData())
+                if (DB.Classes.DB.BookingContext.DefaultData())
                 { 
 #else
                 if (db.CleanDB())

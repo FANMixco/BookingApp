@@ -11,10 +11,14 @@ namespace BookingApp.DB.Classes
         public static string Encrypt(string password)
         {
             byte[] data = Encoding.UTF8.GetBytes(password);
-            using MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-            byte[] keys = md5.ComputeHash(Encoding.UTF8.GetBytes(HASH));
-            using TripleDESCryptoServiceProvider tripleDes = new TripleDESCryptoServiceProvider() { Key = keys, Mode = CipherMode.ECB, Padding = PaddingMode.PKCS7 };
-            ICryptoTransform transform = tripleDes.CreateEncryptor();
+            byte[] keys = SHA256.HashData(Encoding.UTF8.GetBytes(HASH));
+
+            using Aes aes = Aes.Create();
+            aes.Key = keys;
+            aes.Mode = CipherMode.ECB;  // Note: ECB mode is not secure; consider using a more secure mode.
+            aes.Padding = PaddingMode.PKCS7;
+
+            ICryptoTransform transform = aes.CreateEncryptor();
             byte[] results = transform.TransformFinalBlock(data, 0, data.Length);
             return Convert.ToBase64String(results);
         }

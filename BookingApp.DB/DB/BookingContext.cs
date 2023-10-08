@@ -41,7 +41,7 @@ namespace BookingApp.DB.Classes.DB
               .HasKey(p => new { p.SettingsId });
         }
 
-        public bool CleanDB()
+        public static bool CleanDB()
         {
             try
             {
@@ -81,13 +81,13 @@ namespace BookingApp.DB.Classes.DB
             catch { return false; }
         }
 
-        public bool DefaultData()
+        public static bool DefaultData()
         {
             try
             {
                 using var db = new BookingContext();
 
-                if (db.Users.Count() == 0)
+                if (!db.Users.Any())
                 {
                     _ = db.Add(new Users() { Username = "admin", Role = 0, Email = "admin@noreply.com", Password = "admin", Registered = DateTime.Now });
                     _ = db.SaveChanges();
