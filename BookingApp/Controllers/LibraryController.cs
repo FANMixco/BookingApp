@@ -115,7 +115,7 @@ namespace BookingApp.Controllers
                 {
                     return RedirectToAction("Index", "Library", new { error = "sameUser" });
                 }
-                else if (db.ReservedBook.Count(x => x.UserId == id) == 0)
+                else if (!db.ReservedBook.Any(x => x.UserId == id))
                 {
                     db.Remove(new Users() { UserId = id });
                     db.SaveChanges();
@@ -141,7 +141,7 @@ namespace BookingApp.Controllers
 
                 using var db = new BookingContext();
 
-                if (db.ReservedBook.Count(x => x.BookId == id) == 0)
+                if (!db.ReservedBook.Any(x => x.BookId == id))
                 {
                     db.Remove(new Books() { BookId = id });
                     db.SaveChanges();
@@ -174,7 +174,7 @@ namespace BookingApp.Controllers
                     return RedirectToAction("Index", "Library", new { error = "wrongBarcode" });
                 }
 
-                if (db.ReservedBook.Count(x => x.BooksCopiesId == currentBC.BooksCopiesId && x.ReturnedDate == null) > 0)
+                if (db.ReservedBook.Any(x => x.BooksCopiesId == currentBC.BooksCopiesId && x.ReturnedDate == null))
                 {
                     return RedirectToAction("Index", "Library", new { error = "reservedBook" });
                 }

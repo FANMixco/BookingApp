@@ -26,16 +26,16 @@ namespace BookingApp.MailLibrary
                 // Credentials
                 var credentials = new NetworkCredential(settings.Email, DB.EncryptionMails.DecryptString(PASS_KEY, settings.PasswordHost));
                 // Mail message
-                var mail = new MailMessage()
+                MailMessage mail = new()
                 {
                     From = new MailAddress(settings.Email),
                     Subject = subject,
-                    Body = body
+                    Body = body,
+                    IsBodyHtml = true
                 };
-                mail.IsBodyHtml = true;
                 mail.To.Add(new MailAddress(email));
                 // Smtp client
-                var client = new SmtpClient()
+                SmtpClient client = new()
                 {
                     Port = settings.Port.Value,
                     DeliveryMethod = SmtpDeliveryMethod.Network,

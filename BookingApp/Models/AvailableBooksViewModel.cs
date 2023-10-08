@@ -4,9 +4,9 @@ namespace BookingApp.Models
 {
     public class AvailableBooksViewModel
     {
-        public List<AvailableBooksModel> AvailableBooks = new List<AvailableBooksModel>();
-        public List<ReservedBooksModel> ReservedBooks = new List<ReservedBooksModel>();
-        public List<UsersModel> Users = new List<UsersModel>();
+        public List<AvailableBooksModel> AvailableBooks = new();
+        public List<ReservedBooksModel> ReservedBooks = new();
+        public List<UsersModel> Users = new();
     }
 
     public class AvailableBooksModel

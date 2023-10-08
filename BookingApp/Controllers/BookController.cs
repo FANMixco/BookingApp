@@ -45,7 +45,7 @@ namespace BookingApp.Controllers
             {
                 using var db = new BookingContext();
 
-                if (db.Books.Count(x => x.Name == book) == 0 && !string.IsNullOrEmpty(book) && !string.IsNullOrEmpty(author))
+                if (!db.Books.Any(x => x.Name == book) && !string.IsNullOrEmpty(book) && !string.IsNullOrEmpty(author))
                 {
                     int? yearVal = null;
 
@@ -159,7 +159,7 @@ namespace BookingApp.Controllers
             foreach (var barcode in removedBarcodes)
             {
                 var booksCopiesId = db.BooksCopies.FirstOrDefault(x => x.Barcode == barcode).BooksCopiesId;
-                if (db.ReservedBook.Count(x => x.BooksCopiesId == booksCopiesId) == 0)
+                if (!db.ReservedBook.Any(x => x.BooksCopiesId == booksCopiesId))
                 {
                     using var db2 = new BookingContext();
                     db2.Remove(new BooksCopies { BooksCopiesId = booksCopiesId });
@@ -182,7 +182,7 @@ namespace BookingApp.Controllers
                     Author = book.Author,
                     Year = book.PublicationYear,
                     Barcodes = barcodes,
-                    Total = barcodes.Count()
+                    Total = barcodes.Count
                 });
             }
             else

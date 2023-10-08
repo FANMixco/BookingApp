@@ -28,7 +28,7 @@ namespace BookingApp.Controllers
         {
             using var db = new BookingContext();
 
-            if (db.Users.Count() == 0)
+            if (!db.Users.Any())
             {
                 return RedirectToAction("FirstTime", "Home");
             }
@@ -36,14 +36,7 @@ namespace BookingApp.Controllers
             var role = _httpContextAccessor.HttpContext.Session.GetInt32("role");
             if (role != null)
             {
-                if (role == 0)
-                {
-                    return RedirectToAction("Index", "Library");
-                }
-                else
-                {
-                    return RedirectToAction("Index", "Booking");
-                }
+                return role == 0 ? RedirectToAction("Index", "Library") : (IActionResult)RedirectToAction("Index", "Booking");
             }
 
             return View();
@@ -150,14 +143,7 @@ namespace BookingApp.Controllers
                 _httpContextAccessor.HttpContext.Session.SetString("user", username);
                 _httpContextAccessor.HttpContext.Session.SetInt32("role", user.Role);
 
-                if (user.Role == 0)
-                {
-                    return RedirectToAction("Index", "Library");
-                }
-                else
-                {
-                    return RedirectToAction("Index", "Booking");
-                }
+                return user.Role == 0 ? RedirectToAction("Index", "Library") : (IActionResult)RedirectToAction("Index", "Booking");
             }
 
             return RedirectToAction("Index", "Home", new { error = "password" });

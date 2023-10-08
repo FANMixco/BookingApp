@@ -33,14 +33,9 @@ namespace BookingApp.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    if (_httpContextAccessor.HttpContext.Session.GetInt32("role") == 0)
-                    {
-                        return RedirectToAction("Index", "Library");
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "Booking");
-                    }
+                    return _httpContextAccessor.HttpContext.Session.GetInt32("role") == 0
+                        ? RedirectToAction("Index", "Library")
+                        : (IActionResult)RedirectToAction("Index", "Booking");
                 }
 
                 var db = new BookingContext();

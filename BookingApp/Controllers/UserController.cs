@@ -34,11 +34,11 @@ namespace BookingApp.Controllers
 
                 using var db = new BookingContext();
 
-                if (db.Users.Count(x => x.Email == email) > 0)
+                if (db.Users.Any(x => x.Email == email))
                 {
                     return RedirectToAction("Update", "User", new { error = "sameEmail" });
                 }
-                else if (db.Users.Count(x => x.Username == username) == 0)
+                else if (!db.Users.Any(x => x.Username == username))
                 {
                     _ = db.Add(new Users() { Username = username, Email = email, Registered = DateTime.Now, Role = int.Parse(SelectedRole), Password = Encryption.Encrypt(password) });
                     _ = db.SaveChanges();
