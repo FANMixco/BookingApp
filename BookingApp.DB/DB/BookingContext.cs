@@ -43,7 +43,7 @@ namespace BookingApp.DB.Classes.DB
               .HasKey(p => new { p.SettingsId });
         }
 
-        public static bool CleanDB()
+        public bool CleanDB()
         {
             try
             {
@@ -83,7 +83,7 @@ namespace BookingApp.DB.Classes.DB
             catch { return false; }
         }
 
-        public static bool DefaultData()
+        public bool DefaultData()
         {
             try
             {

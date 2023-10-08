@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -24,6 +25,12 @@ namespace BookingApp
 
             if (!System.IO.File.Exists(DB_FIRST_TIME))
             {
+                try 
+                {
+                    using (FileStream fs = File.Create(DB_FIRST_TIME)) { }
+                }
+                catch { }
+
                 using var db = new DB.Classes.DB.BookingContext();
 #if DEBUG || UnitTest
                 if (DB.Classes.DB.BookingContext.DefaultData())
